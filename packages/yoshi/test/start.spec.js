@@ -9,6 +9,7 @@ const retryPromise = require('retry-promise').default;
 const { outsideTeamCity } = require('../../../test-helpers/env-variables');
 const https = require('https');
 const { takePort } = require('../../../test-helpers/http-helpers');
+const detect = require('detect-port');
 
 describe('Aggregator: Start', () => {
   let test, child;
@@ -688,7 +689,20 @@ describe('Aggregator: Start', () => {
               'src/someFile.js': '',
               'index.js': `
                 console.log('onInit');
-                setInterval(() => {}, 1000);
+                const http = require('http');
+
+                const hostname = 'localhost';
+                const port = process.env.PORT;
+                const server = http.createServer((req, res) => {
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'text/plain');
+                  res.end('hello');
+                });
+
+                server.listen(port, hostname, () => {
+                  console.log('Running a server...');
+                });
+
                 process.on('SIGHUP', () => console.log('onRestart'));
               `,
               'package.json': fx.packageJson(),
@@ -697,21 +711,106 @@ describe('Aggregator: Start', () => {
             .spawn('start', ['--manual-restart']);
         });
 
-        it('should send SIGHUP to entryPoint process on change', () =>
-          checkServerLogContains('onInit').then(() =>
-            triggerChangeAndCheckForRestartMessage(),
-          ));
+        it('should send SIGHUP to entryPoint process on change', async () => {
+          await checkStdout('Application is now available', {
+            backoff: 100,
+            max: 30,
+          });
 
-        it('should not restart server', () =>
-          checkServerLogContains('onInit', { backoff: 200 })
-            .then(() => triggerChangeAndCheckForRestartMessage())
-            .then(() => expect(serverLogContent()).to.not.contain('onInit')));
+          await triggerChangeAndCheckForRestartMessage();
+        });
+
+        it('should not restart server', async () => {
+          await checkStdout('Application is now available', {
+            backoff: 100,
+            max: 30,
+          });
+
+          await triggerChangeAndCheckForRestartMessage();
+
+          expect(serverLogContent()).to.not.contain('onInit');
+        });
 
         function triggerChangeAndCheckForRestartMessage() {
           clearServerLog();
           test.modify('src/someFile.js', ' ');
           return checkServerLogContains('onRestart', { backoff: 200 });
         }
+      });
+    });
+
+    it('should print application ready message only after the server port is avaialble', async () => {
+      const port = await detect(3005);
+
+      // Intentionally start listening after a timeout, to check that we indeed wait for the port
+      child = test
+        .setup({
+          'index.js': `
+          'use strict';
+
+          const http = require('http');
+
+          const hostname = 'localhost';
+          const port = process.env.PORT;
+          const server = http.createServer((req, res) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.end('hello');
+          });
+
+          setTimeout(() => {
+            server.listen(port, hostname, () => {
+              console.log('Running a server...');
+            });
+          }, 1000);
+        `,
+          'package.json': fx.packageJson(),
+        })
+        .spawn('start', [], { PORT: port });
+
+      await checkStdout('Application is now available', {
+        backoff: 100,
+        max: 30,
+      });
+      await fetch(`http://localhost:${port}`);
+
+      expect(test.stdout).not.to.contain(
+        'Still waiting for app-server to start',
+      );
+    });
+
+    it('should pring waiting for app server to start message if the server did not start in time', async () => {
+      const port = await detect(3005);
+
+      // Intentionally start listening after a timeout, to check that we indeed wait for the port
+      child = test
+        .setup({
+          'index.js': `
+          'use strict';
+
+          const http = require('http');
+
+          const hostname = 'localhost';
+          const port = process.env.PORT;
+          const server = http.createServer((req, res) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.end('hello');
+          });
+
+          setTimeout(() => {
+            server.listen(port, hostname, () => {
+              console.log('Running a server...');
+            });
+          }, 5000);
+        `,
+          'package.json': fx.packageJson(),
+        })
+        .spawn('start', [], { PORT: port });
+
+      await checkStdout('Still waiting for app-server to start', {
+        backoff: 100,
+        max: 40,
       });
     });
 
@@ -769,8 +868,8 @@ describe('Aggregator: Start', () => {
     });
   });
 
-  function checkServerLogCreated({ backoff = 100 } = {}) {
-    return retryPromise({ backoff }, () => {
+  function checkServerLogCreated({ backoff = 100, max = 20 } = {}) {
+    return retryPromise({ backoff, max }, () => {
       const created = test.contains('target/server.log');
 
       return created
@@ -787,9 +886,9 @@ describe('Aggregator: Start', () => {
     test.write('target/server.log', '');
   }
 
-  function checkServerLogContains(str, { backoff = 100 } = {}) {
-    return checkServerLogCreated({ backoff }).then(() =>
-      retryPromise({ backoff }, () => {
+  function checkServerLogContains(str, { backoff = 100, max = 20 } = {}) {
+    return checkServerLogCreated({ backoff, max }).then(() =>
+      retryPromise({ backoff, max }, () => {
         const content = serverLogContent();
 
         return content.includes(str)
@@ -814,8 +913,8 @@ describe('Aggregator: Start', () => {
     );
   }
 
-  function checkStdout(str) {
-    return retryPromise({ backoff: 100 }, () =>
+  function checkStdout(str, { backoff = 100, max = 10 } = {}) {
+    return retryPromise({ backoff, max }, () =>
       test.stdout.indexOf(str) > -1 ? Promise.resolve() : Promise.reject(),
     );
   }
@@ -901,3 +1000,9 @@ describe('Aggregator: Start', () => {
     );
   }
 });
+
+function reversePromise(promise) {
+  return new Promise((resolve, reject) => {
+    promise.then(reject).catch(resolve);
+  });
+}
