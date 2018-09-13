@@ -6,9 +6,11 @@ const spawn = require('cross-spawn');
 const detect = require('detect-port');
 const debounce = require('lodash/debounce');
 const { PORT } = require('../../constants');
+const waitPort = require('wait-port');
 
 let server;
 let port;
+
 const defaultPort = Number(process.env.PORT) || PORT;
 const serverDebugHost = '127.0.0.1';
 
@@ -36,7 +38,7 @@ function initializeServerStartDelegate({
   debugBrkPort,
   log,
 }) {
-  return port => {
+  return async port => {
     const defaultEnv = {
       NODE_ENV: 'development',
       DEBUG: 'wix:*,wnp:*',
@@ -53,27 +55,6 @@ function initializeServerStartDelegate({
         ),
       );
     }
-
-    console.log('');
-    console.log(
-      'Application is now available at ',
-      chalk.magenta(`http://localhost:${env.PORT}${env.MOUNT_POINT || '/'}`),
-    );
-    if (debugBrkPort !== undefined) {
-      console.log(
-        'Debugger is available at ',
-        chalk.magenta(`${serverDebugHost}:${debugBrkPort}`),
-      );
-    } else if (debugPort !== undefined) {
-      console.log(
-        'Debugger is available at ',
-        chalk.magenta(`${serverDebugHost}:${debugPort}`),
-      );
-    }
-    console.log(
-      'Server log is written to ',
-      chalk.magenta('./target/server.log'),
-    );
 
     mkdirp.sync(path.resolve('target'));
     const runScripts = [serverScript];
@@ -98,6 +79,43 @@ function initializeServerStartDelegate({
         displayErrors();
       }
     });
+
+    const waitingLogTimeout = setTimeout(() => {
+      console.log('');
+      console.log(
+        `Still waiting for app-server to start (make sure it is listening on ${chalk.magenta(
+          'process.env.PORT',
+        )}...`,
+      );
+    }, 3000);
+
+    await waitPort({
+      host: 'localhost',
+      port: env.PORT,
+      output: 'silent',
+    });
+
+    clearTimeout(waitingLogTimeout);
+
+    console.log(
+      'Application is now available at ',
+      chalk.magenta(`http://localhost:${env.PORT}${env.MOUNT_POINT || '/'}`),
+    );
+    if (debugBrkPort !== undefined) {
+      console.log(
+        'Debugger is available at ',
+        chalk.magenta(`${serverDebugHost}:${debugBrkPort}`),
+      );
+    } else if (debugPort !== undefined) {
+      console.log(
+        'Debugger is available at ',
+        chalk.magenta(`${serverDebugHost}:${debugPort}`),
+      );
+    }
+    console.log(
+      'Server log is written to ',
+      chalk.magenta('./target/server.log'),
+    );
   };
 }
 

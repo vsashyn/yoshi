@@ -248,7 +248,7 @@ const fx = {
     const http = require('http');
 
     const hostname = 'localhost';
-    const port = ${port || fx.defaultServerPort()};
+    const port = ${port} || process.env.PORT || ${fx.defaultServerPort()};
     const server = http.createServer((req, res) => {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
