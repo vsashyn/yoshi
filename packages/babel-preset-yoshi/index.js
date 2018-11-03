@@ -1,4 +1,5 @@
 const DEFAULT_ENV = 'development';
+const DEFAULT_MODULES = 'commonjs';
 const env = process.env.BABEL_ENV || process.env.NODE_ENV || DEFAULT_ENV;
 
 const isDevelopment = env === 'development';
@@ -16,13 +17,17 @@ const normaliseOptions = opts => {
 module.exports = function(api, opts = {}) {
   const options = normaliseOptions(opts);
   const inWebpack = process.env.IN_WEBPACK;
+  let { modules } = options;
+  if (typeof modules === 'undefined') {
+    modules = inWebpack ? false : DEFAULT_MODULES;
+  }
 
   return {
     presets: [
       [
         require('babel-preset-env').default,
         {
-          modules: options.modules || inWebpack ? false : 'commonjs',
+          modules,
           // Display targets to compile for.
           debug: options.debug,
           // Always use destructuring b/c of import/export support.
