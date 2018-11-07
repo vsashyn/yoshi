@@ -1,7 +1,0 @@
-{
-  "plugins": [["../../../../../src/plugins/babel-plugin-transform-hmr-runtime", {
-    "entryFiles": [
-      "./test/babel/fixtures/hot-module/accept-hot-module/actual.js"
-    ]
-  }]]
-}

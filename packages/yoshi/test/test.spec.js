@@ -602,7 +602,7 @@ describe('Aggregator: Test', () => {
           ...setupMediaFilesExtensions(imageExtensions, 'image'),
           ...setupMediaFilesExtensions(audioExtensions, 'audio'),
           '.babelrc': `{"plugins": ["${require.resolve(
-            'babel-plugin-transform-es2015-modules-commonjs',
+            '@babel/plugin-transform-modules-commonjs',
           )}"]}`,
           'test/mocha-setup.js': 'global.foo = 123',
           'src/getData1.graphql': 'query GetData1 { id, name }',
@@ -708,7 +708,7 @@ describe('Aggregator: Test', () => {
       expect(res.stdout).to.contain('passed css');
     });
 
-    describe('with babel-register', () => {
+    describe('with @babel/register', () => {
       it('should transpile both sources and specified 3rd party modules in runtime', () => {
         expect(res.stdout).to.contain('passed babel');
       });
@@ -809,7 +809,7 @@ describe('Aggregator: Test', () => {
           .execute('test', ['--mocha']);
 
         expect(res.code).to.equal(1);
-        expect(res.stderr).to.contain('Unexpected token import');
+        expect(res.stderr).to.match(/Unexpected (identifier|token)/);
       });
 
       it('should output test coverage when --coverage is passed', () => {
@@ -840,12 +840,12 @@ describe('Aggregator: Test', () => {
         expect(res.stdout).to.not.contain('cdn');
       });
 
-      describe('with babel-register', () => {
+      describe('with @babel/register', () => {
         it('should transpile explicitly configured externalUnprocessedModules', function() {
           const res = customTest
             .setup({
               '.babelrc': `{"plugins": ["${require.resolve(
-                'babel-plugin-transform-es2015-modules-commonjs',
+                '@babel/plugin-transform-modules-commonjs',
               )}"]}`,
               'node_modules/my-unprocessed-module/index.js': 'export default 1',
               'test/some.js': `import x from 'my-unprocessed-module'; export default x => x`,
@@ -923,7 +923,7 @@ describe('Aggregator: Test', () => {
           .execute('test', ['--mocha']);
 
         expect(res.code).to.equal(1);
-        expect(res.stderr).to.contain('Unexpected token import');
+        expect(res.stderr).to.match(/Unexpected (identifier|token)/);
       });
 
       describe('stylable integration', () => {

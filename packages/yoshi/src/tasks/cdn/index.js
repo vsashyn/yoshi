@@ -71,10 +71,7 @@ module.exports = async ({
                 useItem.options.plugins.push(
                   require.resolve('react-hot-loader/babel'),
                   [
-                    path.resolve(
-                      __dirname,
-                      '../../plugins/babel-plugin-transform-hmr-runtime',
-                    ),
+                    require.resolve('babel-plugin-transform-hmr-runtime'),
                     { entryFiles },
                   ],
                 );

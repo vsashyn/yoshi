@@ -53,9 +53,10 @@ const entryPoint = addJsSuffix(cliArgs['entry-point'] || 'index.js');
 
 module.exports = runner.command(
   async tasks => {
-    const { sass, less, copy, clean, babel, typescript } = tasks;
+    const { sass, less, copy, clean, typescript } = tasks;
 
     const wixCdn = tasks[require.resolve('../tasks/cdn')];
+    const babel = tasks[require.resolve('../tasks/babel')];
     const migrateScopePackages =
       tasks[require.resolve('../tasks/migrate-to-scoped-packages')];
     const wixUpdateNodeVersion =

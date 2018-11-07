@@ -25,32 +25,40 @@ module.exports = function(api, opts = {}) {
   return {
     presets: [
       [
-        require('babel-preset-env').default,
+        require('@babel/preset-env').default,
         {
           modules,
           // Display targets to compile for.
           debug: options.debug,
           // Always use destructuring b/c of import/export support.
-          include: ['transform-es2015-destructuring', ...options.include],
+          include: ['transform-destructuring', ...options.include],
           exclude: options.exclude,
           // We don't need to be fully spec compatible, bundle size is more important.
           loose: true,
           // Allow users to provide its own targets and supply target node for test environment by default.
-          targets: options.targets || (isTest && { node: 'current' }),
+          targets: options.targets || (isTest && 'current node'),
         },
       ],
       !options.ignoreReact && [
-        require('babel-preset-react'),
-        // Uncomment for babel 7.x.
-        // {
-        //   development: isDevelopment || isTest
-        // }
+        require('@babel/preset-react'),
+        {
+          development: isDevelopment || isTest,
+        },
       ],
     ].filter(Boolean),
     plugins: [
+      // Enable stage 2 decorators.
+      [
+        require('@babel/plugin-proposal-decorators'),
+        {
+          // Enable export after decorator syntax. It's also a part of the spec and tc39 is not made a decision about it.
+          // Read more https://github.com/tc39/proposal-decorators/issues/69
+          decoratorsBeforeExport: true,
+        },
+      ],
       [
         // Allow the usage of class properties.
-        require('babel-plugin-transform-class-properties'),
+        require('@babel/plugin-proposal-class-properties'),
         {
           // Bundle size and perf is prior to tiny ES spec incompatibility.
           loose: true,
@@ -58,30 +66,26 @@ module.exports = function(api, opts = {}) {
       ],
       [
         // Add helpers for generators and async/await.
-        require('babel-plugin-transform-runtime').default,
+        require('@babel/plugin-transform-runtime').default,
         {
           // 2 options blow are usualy handled by pollyfil.io.
           helpers: false,
-          polyfill: false,
           regenerator: true,
         },
       ],
-      // Enable legacy decorators.
-      require('babel-plugin-transform-decorators'),
-      // Leave dynamic imports untranspiled for webpack
-      inWebpack
-        ? require('babel-plugin-syntax-dynamic-import')
-        : require('babel-plugin-dynamic-import-node').default, // https://github.com/airbnb/babel-plugin-dynamic-import-node/issues/27
+      require('@babel/plugin-syntax-dynamic-import'),
+      // https://github.com/airbnb/babel-plugin-dynamic-import-node/issues/27
+      !inWebpack && require('babel-plugin-dynamic-import-node').default,
       // Current Node and new browsers (in development environment) already implement it so
       // just add the syntax of Object { ...rest, ...spread }
       (isDevelopment || isTest) &&
-        require('babel-plugin-syntax-object-rest-spread'),
+        require('@babel/plugin-syntax-object-rest-spread'),
 
       ...(!isProduction
         ? []
         : [
             // Transform Object { ...rest, ...spread } to support old browsers
-            require('babel-plugin-transform-object-rest-spread'),
+            require('@babel/plugin-proposal-object-rest-spread'),
             !options.ignoreReact && [
               // Remove PropTypes on react projects.
               require('babel-plugin-transform-react-remove-prop-types').default,

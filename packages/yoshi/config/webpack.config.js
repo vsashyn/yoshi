@@ -16,6 +16,8 @@ const WriteFilePlugin = require('write-file-webpack-plugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const DynamicPublicPath = require('../src/webpack-plugins/dynamic-public-path');
 const { localIdentName } = require('../src/constants');
+const EnvirnmentMarkPlugin = require('../src/webpack-plugins/environment-mark-plugin');
+
 const {
   ROOT_DIR,
   SRC_DIR,
@@ -293,7 +295,7 @@ function createCommonWebpackConfig({
       new CaseSensitivePathsPlugin(),
       // Way of communicating to `babel-preset-yoshi` or `babel-preset-wix` that
       // it should optimize for Webpack
-      { apply: () => (process.env.IN_WEBPACK = 'true') },
+      new EnvirnmentMarkPlugin(),
       // https://github.com/Realytics/fork-ts-checker-webpack-plugin
       ...(isTypescriptProject && project.experimentalServerBundle && isDebug
         ? [

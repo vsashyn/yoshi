@@ -39,12 +39,13 @@ module.exports = runner.command(
       return;
     }
 
-    const { less, clean, copy, babel, sass, webpack, typescript } = tasks;
+    const { less, clean, copy, sass, webpack, typescript } = tasks;
 
     const migrateScopePackages =
       tasks[require.resolve('../tasks/migrate-to-scoped-packages')];
     const wixUpdateNodeVersion =
       tasks[require.resolve('../tasks/update-node-version')];
+    const babel = tasks[require.resolve('../tasks/babel')];
     const wixPetriSpecs = tasks[require.resolve('../tasks/petri-specs')];
     const wixMavenStatics = tasks[require.resolve('../tasks/maven-statics')];
     const wixDepCheck = tasks[require.resolve('../tasks/dep-check')];
@@ -62,14 +63,16 @@ module.exports = runner.command(
       ),
     ]);
 
-    const esTarget = shouldExportModule();
+    const useEsTarget = shouldExportModule();
 
     await Promise.all([
       printAndExitOnErrors(() =>
-        transpileJavascript({ esTarget }).then(() => transpileNgAnnotate()),
+        transpileJavascript({ esTarget: useEsTarget }).then(() =>
+          transpileNgAnnotate(),
+        ),
       ),
-      ...transpileCss({ esTarget }),
-      ...copyAssets({ esTarget }),
+      ...transpileCss({ esTarget: useEsTarget }),
+      ...copyAssets({ esTarget: useEsTarget }),
       bundle(),
       printAndExitOnErrors(() =>
         wixPetriSpecs(
@@ -263,19 +266,24 @@ module.exports = runner.command(
         }
       } else if (isBabelProject() && runIndividualTranspiler) {
         transpilations.push(
-          babel({
-            pattern: globs.babel,
-            target: globs.dist({ esTarget }),
-          }),
+          babel(
+            {
+              pattern: globs.babel,
+              target: globs.dist({ esTarget }),
+            },
+            {
+              title: 'babel',
+            },
+          ),
         );
         if (esTarget) {
           transpilations.push(
             babel({
               pattern: globs.babel,
               target: globs.dist({ esTarget: false }),
-              plugins: require.resolve(
-                'babel-plugin-transform-es2015-modules-commonjs',
-              ),
+              plugins: [
+                require.resolve('@babel/plugin-transform-modules-commonjs'),
+              ],
             }),
           );
         }
