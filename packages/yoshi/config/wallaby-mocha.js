@@ -6,11 +6,9 @@ module.exports = function(wallaby) {
   );
   wallabyCommon.compilers = {
     '**/*.js{,x}': wallaby.compilers.babel({
-      babel: require('babel-core'), // Make sure wallaby is using babel 6.X
+      babel: require('@babel/core'),
       babelrc: true,
-      plugins: [
-        require.resolve('babel-plugin-transform-es2015-modules-commonjs'),
-      ],
+      plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')],
     }),
   };
   wallabyCommon.testFramework = 'mocha';

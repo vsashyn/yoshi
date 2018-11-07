@@ -132,7 +132,7 @@ describe('Aggregator: e2e', () => {
       );
     });
 
-    it('should use babel-register', function() {
+    it('should use @babel/register', function() {
       this.timeout(60000);
 
       const res = test
@@ -148,7 +148,7 @@ describe('Aggregator: e2e', () => {
       );
     });
 
-    it('should not use babel-register', function() {
+    it('should not use @babel/register', function() {
       this.timeout(60000);
 
       const res = test
@@ -156,7 +156,7 @@ describe('Aggregator: e2e', () => {
         .execute('test', ['--protractor'], outsideTeamCity);
 
       expect(res.code).to.equal(1);
-      expect(res.stdout).to.contain('Unexpected token import');
+      expect(res.stdout).to.match(/Unexpected (identifier|token)/);
     });
   });
 
@@ -248,8 +248,8 @@ describe('Aggregator: e2e', () => {
             Object.assign(cdnConfigurations(), { runIndividualTranspiler }),
           )},
           "babel": { "plugins": ["${require.resolve(
-            'babel-plugin-transform-es2015-modules-commonjs',
-          )}"] }
+            '@babel/plugin-transform-modules-commonjs',
+          )}"]}
         }`,
     });
   }

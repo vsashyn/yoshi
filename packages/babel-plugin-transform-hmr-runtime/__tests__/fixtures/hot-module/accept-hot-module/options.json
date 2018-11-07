@@ -1,0 +1,7 @@
+{
+  "plugins": [["../../../..", {
+    "entryFiles": [
+      "./__tests__/fixtures/hot-module/accept-hot-module/actual.js"
+    ]
+  }]]
+}

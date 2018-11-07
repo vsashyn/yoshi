@@ -4,7 +4,7 @@ module.exports = function(wallaby) {
   // use the transform configuration of jest
   wallabyCommon.compilers = {
     '**/*.js{,x}': wallaby.compilers.babel({
-      babel: require('babel-core'), // Make sure wallaby is using babel 6.X
+      babel: require('@babel/core'),
       babelrc: true,
     }),
   };

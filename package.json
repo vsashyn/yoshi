@@ -19,6 +19,7 @@
     "test:integration": "npm test --prefix ./packages/yoshi",
     "test:unit": "npx jest --config='./jest.unit.config.js'",
     "test:app-flow": "node scripts/runKitchensink.js",
+    "test-babel-plugin-transform-hmr-runtime": "npm test --prefix ./packages/babel-plugin-transform-hmr-runtime",
     "website:dev": "npm start --prefix './website'"
   },
   "husky": {
