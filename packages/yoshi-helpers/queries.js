@@ -59,7 +59,11 @@ module.exports.isTypescriptProject = () =>
   fs.existsSync(path.resolve('tsconfig.json'));
 
 module.exports.isBabelProject = () => {
-  return !!glob.sync(path.resolve('.babelrc')).length || !!project.babel;
+  return (
+    !!glob.sync(path.resolve('.babelrc')).length ||
+    !!glob.sync(path.resolve('babel.config.js')).length ||
+    !!project.babel
+  );
 };
 
 module.exports.shouldExportModule = () => {
