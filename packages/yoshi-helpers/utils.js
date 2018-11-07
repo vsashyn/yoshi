@@ -128,13 +128,14 @@ module.exports.processIsJest = pid => {
   return commandArg.split('/').pop() === 'jest';
 };
 
-module.exports.getProcessOnPort = async port => {
-  const portTestResult = await detect(port);
+module.exports.getProcessOnPort = async (port, shouldCheckTestResult) => {
+  if (shouldCheckTestResult) {
+    const portTestResult = await detect(port);
 
-  if (port === portTestResult) {
-    return null;
+    if (port === portTestResult) {
+      return null;
+    }
   }
-
   try {
     const pid = module.exports.getProcessIdOnPort(port);
     const cwd = getDirectoryOfProcessById(pid);
