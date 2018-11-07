@@ -12,8 +12,8 @@ const child_process = require('child_process');
 const waitPort = require('wait-port');
 const { servers } = require('yoshi-config');
 const { WS_ENDPOINT_PATH } = require('./constants');
-const { getProcessForPort, shouldRunE2Es } = require('./utils');
-const { setupRequireHooks } = require('yoshi-helpers');
+const { shouldRunE2Es } = require('./utils');
+const { getProcessOnPort, setupRequireHooks } = require('yoshi-helpers');
 
 // the user's config is loaded outside of a jest runtime and should be transpiled
 // with babel/typescript, this may be run separately for every worker
@@ -46,7 +46,9 @@ module.exports = async () => {
 
     await fs.outputFile(WS_ENDPOINT_PATH, global.BROWSER.wsEndpoint());
 
-    const webpackDevServerProcessCwd = getProcessForPort(servers.cdn.port);
+    const { cwd: webpackDevServerProcessCwd } = getProcessOnPort(
+      servers.cdn.port,
+    );
 
     if (!webpackDevServerProcessCwd) {
       throw new Error(
@@ -56,10 +58,10 @@ module.exports = async () => {
       );
     }
 
-    if (webpackDevServerProcessCwd.directory !== process.cwd()) {
+    if (webpackDevServerProcessCwd !== process.cwd()) {
       throw new Error(
         `A different process (${chalk.cyan(
-          webpackDevServerProcessCwd.directory,
+          webpackDevServerProcessCwd,
         )}) is already running on port '${chalk.cyan(
           servers.cdn.port,
         )}', aborting.`,
@@ -67,12 +69,14 @@ module.exports = async () => {
     }
 
     if (jestYoshiConfig.server) {
-      const serverProcessCwd = getProcessForPort(jestYoshiConfig.server.port);
+      const { cwd: serverProcessCwd } = getProcessOnPort(
+        jestYoshiConfig.server.port,
+      );
 
       if (serverProcessCwd) {
         throw new Error(
           `A different process (${chalk.cyan(
-            serverProcessCwd.directory,
+            serverProcessCwd,
           )}) is already running on port ${chalk.cyan(
             jestYoshiConfig.server.port,
           )}, aborting.`,

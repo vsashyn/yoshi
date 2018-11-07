@@ -107,13 +107,26 @@ module.exports.getProcessIdOnPort = port => {
     .trim();
 };
 
-function getDirectoryOfProcessById(processId) {
+function getDirectoryOfProcessById(pid) {
   return childProcess
-    .execSync(`lsof -p ${processId} | grep cwd | awk '{print $9}'`, {
+    .execSync(`lsof -p ${pid} | grep cwd | awk '{print $9}'`, {
       encoding: 'utf-8',
     })
     .trim();
 }
+
+const getCommandArgByPid = (pid, argIndex = 0) => {
+  return childProcess
+    .execSync(`ps -p ${pid} | awk '{print $${4 + argIndex}}'`, {
+      encoding: 'utf-8',
+    })
+    .trim();
+};
+
+module.exports.processIsJest = pid => {
+  const commandArg = getCommandArgByPid(pid, 1);
+  return commandArg.split('/').pop() === 'jest';
+};
 
 module.exports.getProcessOnPort = async port => {
   const portTestResult = await detect(port);
