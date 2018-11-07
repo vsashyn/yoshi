@@ -1,5 +1,5 @@
 const childProcess = require('child_process');
-const { processIsJest, getProcessOnPort } = require('yoshi-helpers');
+const { processIsJest, getProcessIdOnPort } = require('yoshi-helpers');
 
 const JEST_WORKER_ID = parseInt(process.env.JEST_WORKER_ID, 10);
 
@@ -11,7 +11,7 @@ module.exports.getPort = () => {
   const generatedPort = 1000 + JEST_WORKER_ID * 300 + COUNTER++;
 
   try {
-    const { pid } = getProcessOnPort(generatedPort);
+    const pid = getProcessIdOnPort(generatedPort);
 
     if (pid) {
       if (processIsJest(pid)) {
@@ -24,7 +24,7 @@ module.exports.getPort = () => {
       }
     }
   } catch (err) {
-    // we don't care if we "getProcessOnPort" fails
+    // we don't care if we "getProcessIdOnPort" fails
   }
 
   return generatedPort;
