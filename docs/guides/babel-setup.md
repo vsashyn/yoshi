@@ -10,7 +10,7 @@ Yoshi provides its own preset for full-stack, client or Node.js projects. It is 
 
 ## Usages in Yoshi projects
 
-Configure `yoshi` to use its built-in preset by adding the following to your `package.json`:
+Configure `yoshi` to use its built-in preset by adding the following to your `package.json` or with separate `babelrc`/`babel.config.js` config:
 
 ```json
 {
@@ -49,17 +49,14 @@ The preset behaves differently according to the environment. The environment is 
 ### Environment specific plugins:
 
 #### `test`
-
-- [dynamic-import-node](https://github.com/airbnb/babel-plugin-dynamic-import-node) - Babel plugin to transpile import() to a deferred require(), for node.
-- [babel-plugin-syntax-object-rest-spread](https://babeljs.io/docs/plugins/syntax-object-rest-spread) Allow the syntax of Object `{ ...rest, ...spread }`
+  - [dynamic-import-node](https://github.com/airbnb/babel-plugin-dynamic-import-node) - Babel plugin to transpile import() to a deferred require(), for node.
+  - [syntax-object-rest-spread](https://babeljs.io/docs/plugins/syntax-object-rest-spread) Allow the syntax of Object `{ ...rest, ...spread }`
 
 #### `development`
-
-- [syntax-dynamic-import](https://babeljs.io/docs/plugins/syntax-dynamic-import) - Allow the syntax of dynamic imports since all transformations done by webpack.
-- [babel-plugin-syntax-object-rest-spread](https://babeljs.io/docs/plugins/syntax-object-rest-spread) Allow the syntax of Object `{ ...rest, ...spread }`
+  - [syntax-dynamic-import](https://babeljs.io/docs/plugins/syntax-dynamic-import) - Allow the syntax of dynamic imports since all transformations done by webpack.
+  - [syntax-object-rest-spread](https://babeljs.io/docs/plugins/syntax-object-rest-spread) Allow the syntax of Object `{ ...rest, ...spread }`
 
 #### `production`
-
-- [syntax-dynamic-import](https://babeljs.io/docs/plugins/syntax-dynamic-import) - Allow the syntax of dynamic imports since all transformations done by webpack.
-- [remove-prop-types](https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types) only for production builds.
-- [babel-plugin-transform-object-rest-spread](https://babeljs.io/docs/plugins/transform-object-rest-spread) - Transform Object `{ ...rest, ...spread }`
+  - [syntax-dynamic-import](https://babeljs.io/docs/plugins/syntax-dynamic-import) - Allow the syntax of dynamic imports since all transformations done by webpack.
+  - [remove-prop-types](https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types) only for production builds.
+  - [proposal-object-rest-spread](https://babeljs.io/docs/plugins/transform-object-rest-spread) - Transform Object `{ ...rest, ...spread }`

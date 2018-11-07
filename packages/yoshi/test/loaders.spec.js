@@ -112,7 +112,11 @@ describe('Loaders', () => {
           'src/icon.svg': createAboveTheLimitFile(),
           'src/icon.inline.svg': createAboveTheLimitFile(),
           'src/icon.inlineW.svg': createAboveTheLimitFile(),
-          '.babelrc': `{"plugins": ["babel-plugin-transform-es2015-block-scoping"]}`,
+          'babel.config.js': `
+            module.exports = {
+              "plugins": ["@babel/plugin-transform-block-scoping"]
+            };
+          `,
           'package.json': `{\n
             "name": "a",
             "dependencies": {\n

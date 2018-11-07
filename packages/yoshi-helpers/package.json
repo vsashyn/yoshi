@@ -10,7 +10,7 @@
   "author": "Ronen Amiel & Ran Yitzhaki",
   "license": "ISC",
   "dependencies": {
-    "babel-register": "^6.26.0",
+    "@babel/register": "^7.0.0",
     "chokidar": "^2.0.4",
     "cosmiconfig": "^4.0.0",
     "detect-port": "^1.2.3",
@@ -22,11 +22,13 @@
     "yoshi-config": "3.18.0"
   },
   "peerDependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.0.0",
+    "@babel/core": "7.1.2",
+    "@babel/plugin-transform-modules-commonjs": "7.1.0",
     "typescript": "^2.0.0 || ^3.0.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "@babel/core": "7.1.2",
+    "@babel/plugin-transform-modules-commonjs": "7.1.0",
     "typescript": "^2.9.2"
   }
 }
