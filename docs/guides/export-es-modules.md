@@ -20,8 +20,8 @@ Yoshi will also use this field to infer whether to create `/es` directory with n
 
 ### How
 
-1. Don't include `babel-plugin-transform-es2015-modules-commonjs` to your `.babelrc`.
-    * If you are using `babel-preset-env`, `babel-preset-es2015` or other preset which includes this plugin under the hood, use `{ modules: false }` to configure it.
+1. Don't include `@babel/plugin-transform-modules-commonjs` to your `.babelrc`.
+    * If you are using `@babel/preset-env`, `@babel/preset-es2015` or other preset which includes this plugin under the hood, use `{ modules: false }` to configure it.
     * If you are using `babel-preset-yoshi` there is nothing special you need to do in babel config.
 2. For typescript project, no special `tsconfig.json` change is needed.
 3. Specify path to your entry file with `module: 'dist/es/src/entry.js'`. Please note that Yoshi will create `es` directory with untranspiled modules near your usual transformation output (`dist/src` and `dist/es/src`).

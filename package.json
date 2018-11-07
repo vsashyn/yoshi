@@ -14,9 +14,10 @@
     "e2e": "npm run e2e --prefix ./packages/create-yoshi-app",
     "postinstall": "npm run bootstrap",
     "test": ":",
+    "test-babel-plugin-transform-hmr-runtime": "npm test --prefix ./packages/babel-plugin-transform-hmr-runtime",
     "test-all": "lerna run test --concurrency 1",
     "test-yoshi": "npm test --prefix ./packages/yoshi",
-    "test-configs": "lerna run test --concurrency 1 --ignore '+(yoshi|create-yoshi-app)'",
+    "test-configs": "lerna run test --concurrency 1 --ignore '+(yoshi|create-yoshi-app|babel-plugin-transform-hmr-runtime)'",
     "test-create-yoshi-app": "npm test --prefix ./packages/create-yoshi-app",
     "website:dev": "npm start --prefix './website'"
   },
