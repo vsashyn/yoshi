@@ -23,7 +23,7 @@ Flag | Short Flag | Description | Default Value
 ---- | ---------- | ----------- | --------------
 --entry-point | -e | Entry point for the app. | `./dist/index.js`
 --manual-restart | | Get SIGHUP on change and manage application reboot manually | false
---no-test | | Do not spawn `npm test` after start | false
+--with-tests | | Spawn `npm test` after start | false
 --no-server | | Do not spawn the app server | false
 --ssl | | Serve the app bundle on https | false
 --debug | | Allow server debugging, debugger will be available at 127.0.0.1:[port] | 0

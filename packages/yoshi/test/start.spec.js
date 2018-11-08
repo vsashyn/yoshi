@@ -88,7 +88,7 @@ describe('Aggregator: Start', () => {
             'package.json': fx.packageJson(),
             'pom.xml': fx.pom(),
           })
-          .spawn('start');
+          .spawn('start', '--with-tests');
 
         return checkStdout('Testing with Mocha');
       });
