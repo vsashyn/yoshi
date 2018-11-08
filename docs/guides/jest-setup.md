@@ -39,7 +39,7 @@ Add the following to your Jest config:
 Use the `start` command to build and serve your bundle and static files, your `e2e` tests require them.
 
 ```sh
-yoshi start --no-test
+yoshi start
 ```
 
 From a different terminal window, use `npx jest` command normally.
