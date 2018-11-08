@@ -18,6 +18,6 @@
     "prettier": "^1.11.1"
   },
   "dependencies": {
-    "eslint-plugin-jest": "^21.17.0"
+    "eslint-plugin-jest": "^22.0.0"
   }
 }

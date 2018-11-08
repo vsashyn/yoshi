@@ -15,7 +15,6 @@ module.exports = {
     ecmaVersion: 6,
     ecmaFeatures: {
       generators: true,
-      experimentalObjectRestSpread: true,
     },
   },
 
