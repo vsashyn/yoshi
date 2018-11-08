@@ -191,6 +191,7 @@ const getStyleLoaders = ({
                       ...cssLoaderOptions,
                       modules: false,
                     },
+                    sideEffects: true,
                   },
                   {
                     // https://github.com/webpack/css-loader
@@ -305,6 +306,9 @@ function createCommonWebpackConfig({
     ],
 
     module: {
+      // Makes missing exports an error instead of warning
+      strictExportPresence: true,
+
       rules: [
         // https://github.com/wix/externalize-relative-module-loader
         ...(project.features.externalizeRelativeLodash

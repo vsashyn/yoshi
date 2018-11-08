@@ -1024,6 +1024,23 @@ describe('Aggregator: Build', () => {
         expect(res.code).to.equal(1);
       });
 
+      it('should fail when a module has missing exports', () => {
+        const resp = test
+          .setup({
+            '.babelrc': '{}',
+            'src/client.js': `import { hello } from './hello'; console.log(hello);`,
+            'src/hello.js': `const hello = 'world'; export default 'world';`,
+            'package.json': fx.packageJson(),
+            'pom.xml': fx.pom(),
+          })
+          .execute('build');
+
+        expect(resp.code).to.equal(1);
+        expect(resp.stderr).to.contain(
+          "export 'hello' was not found in './hello'",
+        );
+      });
+
       it("should fail with exit code 1 when yoshi can't transpile less file", () => {
         const resp = test
           .setup({
