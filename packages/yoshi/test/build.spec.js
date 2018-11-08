@@ -616,7 +616,7 @@ describe('Aggregator: Build', () => {
           'src/something.ts': fx.angularJs(),
           'something/something.js': fx.angularJs(),
           'something.js': fx.angularJs(),
-          'src/styles/style.scss': `.a {.b {color: red;}}`,
+          'src/styles/style.scss': `.a {.b {color: red;}} .c{margin: 10px 20px 10px 20px;}`,
           'tsconfig.json': fx.tsconfig(),
           '.babelrc': `{"plugins": ["${require.resolve(
             '@babel/plugin-transform-block-scoping',
@@ -706,6 +706,15 @@ describe('Aggregator: Build', () => {
       );
       expect(test.content('dist/statics/app.min.css')).to.contain(
         '{color:red}',
+      );
+    });
+
+    it('should generate css bundle minified with cssnano on ci', () => {
+      expect(test.content('dist/statics/app.min.css')).not.to.contain(
+        '{margin:10px 20px 10px 20px}',
+      );
+      expect(test.content('dist/statics/app.min.css')).to.contain(
+        '{margin:10px 20px}',
       );
     });
 
