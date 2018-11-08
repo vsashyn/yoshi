@@ -4,7 +4,9 @@ process.env.NODE_ENV = 'development';
 
 const parseArgs = require('minimist');
 
-const cliArgs = parseArgs(process.argv.slice(2));
+const cliArgs = parseArgs(process.argv.slice(2), {
+  boolean: ['with-tests'],
+});
 
 if (cliArgs.production) {
   // run start with production configuration
@@ -46,7 +48,7 @@ const runner = createRunner({
 });
 
 const addJsSuffix = suffix('.js');
-const shouldRunTests = cliArgs.test !== false;
+const shouldRunTests = cliArgs['with-tests'] === true;
 const debugPort = cliArgs.debug;
 const debugBrkPort = cliArgs['debug-brk'];
 const entryPoint = addJsSuffix(cliArgs['entry-point'] || 'index.js');
