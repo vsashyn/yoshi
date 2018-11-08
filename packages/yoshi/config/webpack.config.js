@@ -7,7 +7,7 @@ const nodeExternals = require('webpack-node-externals');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const StylableWebpackPlugin = require('@stylable/webpack-plugin');
 const TpaStyleWebpackPlugin = require('tpa-style-webpack-plugin');
 const RtlCssPlugin = require('rtlcss-webpack-plugin');
@@ -513,14 +513,14 @@ function createClientWebpackConfig({
       splitChunks: useSplitChunks ? splitChunksConfig : false,
       concatenateModules: isProduction && !disableModuleConcat,
       minimizer: [
-        new UglifyJsPlugin({
+        new TerserPlugin({
           // Use multi-process parallel running to improve the build speed
           // Default number of concurrent runs: os.cpus().length - 1
           parallel: true,
           // Enable file caching
           cache: true,
           sourceMap: true,
-          uglifyOptions: {
+          terserOptions: {
             output: {
               // support emojis
               ascii_only: true,
