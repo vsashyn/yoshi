@@ -9,6 +9,9 @@ const {
   publishMonorepo,
   authenticateToRegistry,
 } = require('../../../scripts/utils/publishMonorepo');
+const {
+  killSpawnProcessAndHisChildren,
+} = require('../../../test-helpers/process');
 
 // verbose logs and output
 const verbose = process.env.VERBOSE_TESTS;
@@ -21,8 +24,9 @@ const stdio = verbose ? 'inherit' : 'pipe';
 
 verifyRegistry();
 
-const filteredProjects = projects.filter(projectType =>
-  !focusProjectPattern ? true : projectType.match(focusProjectPattern),
+const filteredProjects = projects.filter(
+  projectType =>
+    !focusProjectPattern ? true : projectType.match(focusProjectPattern),
 );
 
 focusProjectPattern &&
@@ -64,14 +68,69 @@ const testTemplate = mockedAnswers => {
       });
     }
 
-    it(`should run npm test with no configuration warnings`, () => {
-      console.log('running npm test...');
-      const { stderr } = execa.shellSync('npm test', {
-        cwd: tempDir,
-        stdio,
+    describe('npm test', () => {
+      it(`should run npm test with no configuration warnings`, () => {
+        console.log('running npm test...');
+        const { stderr } = execa.shellSync('npm test', {
+          cwd: tempDir,
+          stdio,
+        });
+
+        expect(stderr).not.toContain('Warning: Invalid configuration object');
+      });
+    });
+
+    describe('npm start', () => {
+      let child;
+      const serverPort = 3000;
+      const cdnPort = 3200;
+      afterEach(() => {
+        return killSpawnProcessAndHisChildren(child);
+      });
+      it(`should run with local server`, async () => {
+        console.log('running npm start...');
+
+        child = execa.shell('npm start', {
+          cwd: tempDir,
+          stdio,
+        });
+
+        execa.shellSync(`npx wait-port ${serverPort} -o silent`, {
+          stdio,
+        });
+
+        const { statusCode } = await new Promise(resolve =>
+          require('http').get(`http://localhost:${serverPort}`, res => {
+            resolve(res);
+          }),
+        );
+
+        expect(statusCode).toBe(200);
       });
 
-      expect(stderr).not.toContain('Warning: Invalid configuration object');
+      it(`should run with local cdn server`, async () => {
+        console.log('running npm start...');
+
+        child = execa.shell('npm start', {
+          cwd: tempDir,
+          stdio,
+        });
+
+        execa.shellSync(`npx wait-port ${cdnPort} -o silent`, {
+          stdio,
+        });
+
+        const { statusCode } = await new Promise(resolve =>
+          require('http').get(
+            `http://localhost:${cdnPort}/app.bundle.js`,
+            res => {
+              resolve(res);
+            },
+          ),
+        );
+
+        expect(statusCode).toBe(200);
+      });
     });
   });
 };
