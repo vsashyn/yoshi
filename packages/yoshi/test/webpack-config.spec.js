@@ -207,7 +207,7 @@ describe('Webpack basic configs', () => {
             .indexOf(value),
         ).to.equal(0);
         expect(content).to.contain(
-          'module.exports = __webpack_require__.p + "image.jpg?',
+          'module.exports = __webpack_require__.p + "assets/image.jpg?',
         );
       });
     });
