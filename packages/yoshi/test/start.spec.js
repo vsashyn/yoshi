@@ -5,8 +5,12 @@ const {
 const tp = require('../../../test-helpers/test-phases');
 const fx = require('../../../test-helpers/fixtures');
 const fetch = require('node-fetch');
+const waitPort = require('wait-port');
 const retryPromise = require('retry-promise').default;
-const { outsideTeamCity } = require('../../../test-helpers/env-variables');
+const {
+  outsideTeamCity,
+  insideTeamCity,
+} = require('../../../test-helpers/env-variables');
 const https = require('https');
 const { takePort } = require('../../../test-helpers/http-helpers');
 
@@ -89,7 +93,7 @@ describe('Aggregator: Start', () => {
           })
           .spawn('start');
 
-        return checkStdout('Testing with Mocha');
+        return test.waitForOutput('Testing with Mocha');
       });
     });
 
@@ -151,7 +155,7 @@ describe('Aggregator: Start', () => {
       });
 
       it('should pass --inspect flag when parameter is passed with the correct port', () => {
-        const port = 8230;
+        const testingPort = 8230;
         const checkIfInspectIsPassedInArgs = function(port) {
           return !!process.execArgv.find(
             arg => arg.indexOf(`--inspect=127.0.0.1:${port}`) === 0,
@@ -161,11 +165,11 @@ describe('Aggregator: Start', () => {
         child = test
           .setup({
             'src/client.js': '',
-            'index.js': `console.log((${checkIfInspectIsPassedInArgs.toString()})(${port}))`,
+            'index.js': `console.log((${checkIfInspectIsPassedInArgs.toString()})(${testingPort}))`,
             'package.json': fx.packageJson(),
             'pom.xml': fx.pom(),
           })
-          .spawn('start', `--debug=${port}`);
+          .spawn('start', `--debug=${testingPort}`);
 
         return checkServerLogContains('true', { backoff: 100 });
       });
@@ -209,7 +213,7 @@ describe('Aggregator: Start', () => {
             },
             [],
           )
-          .spawn('start');
+          .spawn('start', [], insideTeamCity);
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
           content => expect(content).to.contain(`"reload":false`),
@@ -224,7 +228,7 @@ describe('Aggregator: Start', () => {
             'src/client.js': `module.exports.wat = 'hmr';\n`,
             'package.json': fx.packageJson(),
           })
-          .spawn('start');
+          .spawn('start', [], insideTeamCity);
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
           content => expect(content).to.contain('"hmr":true'),
@@ -243,7 +247,7 @@ describe('Aggregator: Start', () => {
               },
             }),
           })
-          .spawn('start');
+          .spawn('start', [], insideTeamCity);
 
         const appBundleContent = await checkServerIsServing({
           port: 3200,
@@ -266,7 +270,7 @@ describe('Aggregator: Start', () => {
             },
             [],
           )
-          .spawn('start');
+          .spawn('start', [], insideTeamCity);
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
           content => expect(content).to.contain(`"hmr":false`),
@@ -339,7 +343,7 @@ describe('Aggregator: Start', () => {
             },
             [],
           )
-          .spawn('start');
+          .spawn('start', [], insideTeamCity);
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
           content => {
@@ -356,7 +360,7 @@ describe('Aggregator: Start', () => {
             'src/client.js': `module.exports.wat = 'hmr';\n`,
             'package.json': fx.packageJson(),
           })
-          .spawn('start');
+          .spawn('start', [], insideTeamCity);
 
         return checkServerIsServing({ port: 3200, file: 'app.bundle.js' }).then(
           content =>
@@ -586,10 +590,9 @@ describe('Aggregator: Start', () => {
     });
 
     describe('Watch', function() {
-      this.timeout(30000);
+      this.timeout(40000);
 
       describe('when using typescript', () => {
-        // currently is not passing in the CI, needs debugging
         it.skip(`should rebuild and restart server after a file has been changed with typescript files`, () => {
           child = test
             .setup({
@@ -620,7 +623,6 @@ describe('Aggregator: Start', () => {
       });
 
       describe('when using es6', () => {
-        // currently is not passing in the CI, needs debugging
         it.skip(`should rebuild and restart server after a file has been changed`, () => {
           child = test
             .setup({
@@ -642,7 +644,6 @@ describe('Aggregator: Start', () => {
       });
 
       describe('when using no transpile', () => {
-        // currently is not passing in the CI, needs debugging
         it.skip(`should restart server after a file has been changed`, () => {
           child = test
             .setup({
@@ -672,7 +673,7 @@ describe('Aggregator: Start', () => {
               'src/client.js': `module.exports = function () {};\n`,
               'package.json': fx.packageJson(),
             })
-            .spawn('start');
+            .spawn('start', [], insideTeamCity);
 
           return checkServerIsServing(file)
             .then(() => test.modify('src/client.js', newSource))
@@ -769,8 +770,16 @@ describe('Aggregator: Start', () => {
     });
   });
 
-  function checkServerLogCreated({ backoff = 100 } = {}) {
-    return retryPromise({ backoff }, () => {
+  async function checkServerLogCreated({ backoff = 100, max = 10 } = {}) {
+    try {
+      await test.waitForOutput("Finished 'app-server' after");
+    } catch (ex) {
+      // If worker were printed without starting an app-server, that's fine,
+      // we can continue checking the server.log
+      console.log('checkServerLogCreated', ex);
+    }
+
+    return retryPromise({ backoff, max }, () => {
       const created = test.contains('target/server.log');
 
       return created
@@ -787,8 +796,8 @@ describe('Aggregator: Start', () => {
     test.write('target/server.log', '');
   }
 
-  function checkServerLogContains(str, { backoff = 100 } = {}) {
-    return checkServerLogCreated({ backoff }).then(() =>
+  function checkServerLogContains(str, { backoff = 100, max = 10 } = {}) {
+    return checkServerLogCreated({ backoff, max }).then(() =>
       retryPromise({ backoff }, () => {
         const content = serverLogContent();
 
@@ -814,44 +823,57 @@ describe('Aggregator: Start', () => {
     );
   }
 
-  function checkStdout(str) {
-    return retryPromise({ backoff: 100 }, () =>
-      test.stdout.indexOf(str) > -1 ? Promise.resolve() : Promise.reject(),
-    );
-  }
-
   function fetchCDN(port, { path = '/', backoff = 100, max = 10 } = {}) {
     if (path[0] !== '/') {
       path = `/${path}`;
     }
     port = port || 3200;
-    return retryPromise({ backoff, max }, () =>
-      fetch(`http://localhost:${port}${path}`),
+
+    return waitPort({
+      port,
+      output: 'silent',
+      timeout: 20000,
+    }).then(() =>
+      retryPromise({ backoff, max }, () =>
+        fetch(`http://localhost:${port}${path}`),
+      ),
     );
   }
 
   function cdnIsServing(name, port = 5005, protocol = 'http', options = {}) {
-    return retryPromise({ backoff: 500 }, async () => {
-      const res = await fetch(
-        `${protocol}://localhost:${port}/${name}`,
-        options,
-      );
+    return waitPort({
+      port,
+      output: 'silent',
+      timeout: 20000,
+    }).then(() =>
+      retryPromise({ backoff: 500 }, async () => {
+        const res = await fetch(
+          `${protocol}://localhost:${port}/${name}`,
+          options,
+        );
 
-      const text = await res.text();
+        const text = await res.text();
 
-      expect(res.status).to.equal(200, text);
+        expect(res.status).to.equal(200, text);
 
-      return text;
-    });
+        return text;
+      }),
+    );
   }
 
   function checkServerIsRespondingWith(expected) {
-    return retryPromise({ backoff: 1000 }, () =>
-      fetch(`http://localhost:${fx.defaultServerPort()}/`)
-        .then(res => res.text())
-        .then(body =>
-          body === expected ? Promise.resolve() : Promise.reject(),
-        ),
+    return waitPort({
+      port: fx.defaultServerPort(),
+      output: 'silent',
+      timeout: 20000,
+    }).then(() =>
+      retryPromise({ backoff: 1000 }, () =>
+        fetch(`http://localhost:${fx.defaultServerPort()}/`)
+          .then(res => res.text())
+          .then(
+            body => (body === expected ? Promise.resolve() : Promise.reject()),
+          ),
+      ),
     );
   }
 
@@ -867,9 +889,15 @@ describe('Aggregator: Start', () => {
     protocol = 'http',
     options = {},
   } = {}) {
-    return retryPromise({ backoff, max }, () =>
-      fetch(`${protocol}://localhost:${port}/${file}`, options).then(res =>
-        res.text(),
+    return waitPort({
+      port,
+      output: 'silent',
+      timeout: 20000,
+    }).then(() =>
+      retryPromise({ backoff, max }, () =>
+        fetch(`${protocol}://localhost:${port}/${file}`, options).then(res =>
+          res.text(),
+        ),
       ),
     );
   }
@@ -882,22 +910,28 @@ describe('Aggregator: Start', () => {
   } = {}) {
     const url = `http://localhost:${port}/${file}`;
     let response;
-    return retryPromise(
-      { backoff, max },
-      () =>
-        new Promise((resolve, reject) =>
-          fetch(url)
-            .then(res => res.text())
-            .then(content => {
-              if (response && response !== content) {
-                resolve(content);
-              } else {
-                reject(`response of ${url} did not change`);
-              }
-              response = content;
-            })
-            .catch(reject),
-        ),
+    return waitPort({
+      port,
+      output: 'silent',
+      timeout: 20000,
+    }).then(() =>
+      retryPromise(
+        { backoff, max },
+        () =>
+          new Promise((resolve, reject) =>
+            fetch(url)
+              .then(res => res.text())
+              .then(content => {
+                if (response && response !== content) {
+                  resolve(content);
+                } else {
+                  reject(`response of ${url} did not change`);
+                }
+                response = content;
+              })
+              .catch(reject),
+          ),
+      ),
     );
   }
 });
