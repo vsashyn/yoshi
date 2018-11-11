@@ -100,9 +100,7 @@ const testTemplate = mockedAnswers => {
         });
 
         const { statusCode } = await new Promise(resolve =>
-          require('http').get(`http://localhost:${serverPort}`, res => {
-            resolve(res);
-          }),
+          require('http').get(`http://localhost:${serverPort}`, resolve),
         );
 
         expect(statusCode).toBe(200);
@@ -123,9 +121,7 @@ const testTemplate = mockedAnswers => {
         const { statusCode } = await new Promise(resolve =>
           require('http').get(
             `http://localhost:${cdnPort}/app.bundle.js`,
-            res => {
-              resolve(res);
-            },
+            resolve,
           ),
         );
 
