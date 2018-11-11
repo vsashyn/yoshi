@@ -12,6 +12,7 @@ const {
 const {
   killSpawnProcessAndHisChildren,
 } = require('../../../test-helpers/process');
+const waitPort = require('wait-port');
 
 // verbose logs and output
 const verbose = process.env.VERBOSE_TESTS;
@@ -95,9 +96,7 @@ const testTemplate = mockedAnswers => {
           stdio,
         });
 
-        execa.shellSync(`npx wait-port ${serverPort} -o silent`, {
-          stdio,
-        });
+        await waitPort({ port: serverPort, output: 'silent' });
 
         const { statusCode } = await new Promise(resolve =>
           require('http').get(`http://localhost:${serverPort}`, resolve),
@@ -114,9 +113,7 @@ const testTemplate = mockedAnswers => {
           stdio,
         });
 
-        execa.shellSync(`npx wait-port ${cdnPort} -o silent`, {
-          stdio,
-        });
+        await waitPort({ port: cdnPort, output: 'silent' });
 
         const { statusCode } = await new Promise(resolve =>
           require('http').get(
@@ -131,11 +128,51 @@ const testTemplate = mockedAnswers => {
   });
 };
 
+<<<<<<< HEAD
+=======
+const publishMonorepo = async () => {
+  // Start in root directory even if run from another directory
+  process.chdir(path.join(__dirname, '../../..'));
+
+  const verdaccio = execa.shell('npx verdaccio --config verdaccio.yaml', {
+    stdio,
+  });
+
+  await waitPort({ port: 4873, output: 'silent' });
+
+  execa.shellSync(
+    `npx lerna exec 'npx npm-auth-to-token -u user -p password -e user@example.com -r "${testRegistry}"'`,
+    {
+      stdio,
+    },
+  );
+
+  execa.shellSync(
+    `npx lerna exec 'node ../../packages/create-yoshi-app/scripts/verifyPublishConfig.js'`,
+    {
+      stdio,
+    },
+  );
+
+  execa.shellSync(
+    `npx lerna publish --yes --force-publish=* --skip-git --cd-version=minor --exact --npm-tag=latest --registry="${testRegistry}"`,
+    {
+      stdio: 'inherit',
+    },
+  );
+
+  // Return a cleanup function
+  return () => {
+    execa.shellSync(`kill -9 ${verdaccio.pid}`);
+  };
+};
+
+>>>>>>> a small refactor - change wait-port to use node api
 describe('create-yoshi-app + yoshi e2e tests', () => {
   let cleanup;
 
-  before(() => {
-    cleanup = publishMonorepo();
+  before(async () => {
+    cleanup = await publishMonorepo();
   });
 
   after(() => cleanup());
