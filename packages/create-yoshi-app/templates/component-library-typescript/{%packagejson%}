@@ -63,5 +63,8 @@
       "react-dom": "ReactDOM"
     },
     "hmr": "auto"
+  },
+  "stylelint": {
+    "extends": "stylelint-config-yoshi"
   }
 }
