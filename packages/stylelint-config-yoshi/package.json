@@ -1,0 +1,17 @@
+{
+  "name": "stylelint-config-yoshi",
+  "version": "3.16.0",
+  "description": "stylelint configuration for projects using yoshi",
+  "main": "index.js",
+  "keywords": [
+    "stylelint",
+    "yoshi"
+  ],
+  "author": "Gal Schlezinger",
+  "license": "ISC",
+  "peerDependencies": {
+    "prettier": "^1.11.1",
+    "stylelint": "^9.7.1",
+    "stylelint-prettier": "^1.0.3"
+  }
+}
