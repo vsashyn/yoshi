@@ -31,7 +31,6 @@ const {
 const globs = require('yoshi-config/globs');
 const {
   isTypescriptProject,
-  runIndividualTranspiler,
   shouldRunLess,
   shouldRunSass,
   shouldTransformHMRRuntime,

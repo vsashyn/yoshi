@@ -31,12 +31,12 @@ const runner = createRunner({
 
 const babelOptions = {
   babelrc: false,
-  presets: [[require.resolve('babel-preset-yoshi'), { modules: false }]],
+  presets: [[require.resolve('babel-preset-yoshi'), { modules: 'commonjs' }]],
 };
 
 const babelEsmOptions = {
   babelrc: false,
-  presets: [[require.resolve('babel-preset-yoshi'), { modules: 'commonjs' }]],
+  presets: [[require.resolve('babel-preset-yoshi'), { modules: false }]],
 };
 
 const shouldWatch = watchMode();
@@ -269,7 +269,7 @@ module.exports = runner.command(
             babel(
               {
                 pattern: globs.babel,
-                target: globs.dist({ esTarget }),
+                target: globs.dist({ esTarget: false }),
                 ...babelOptions,
               },
               {
@@ -281,7 +281,7 @@ module.exports = runner.command(
             transpilations.push(
               babel({
                 pattern: globs.babel,
-                target: globs.dist({ esTarget: false }),
+                target: globs.dist({ esTarget: true }),
                 ...babelEsmOptions,
               }),
             );
