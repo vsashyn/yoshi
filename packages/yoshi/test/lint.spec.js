@@ -211,6 +211,60 @@ describe('Aggregator: Lint', () => {
   });
 
   describe('stylelint', () => {
+    it('does nothing when no configurations are given', () => {
+      const res = test
+        .setup({
+          'src/some.scss': `.hello { world: #yes; }`,
+          'package.json': JSON.stringify({
+            name: 'a',
+            version: '1.0.0',
+          }),
+        })
+        .execute('lint');
+
+      expect(res.code).to.equal(0);
+      expect(res.stdout).not.to.contain('stylelint');
+      expect(res.stderr).not.to.contain('stylelint');
+    });
+
+    it('should be able to use default config from stylelint-config-yoshi', () => {
+      const res = test
+        .setup({
+          'src/some.scss': `.hello { world: #yes; }`,
+          'package.json': JSON.stringify({
+            name: 'a',
+            version: '1.0.0',
+            stylelint: {
+              extends: 'stylelint-config-yoshi',
+            },
+          }),
+        })
+        .execute('lint');
+
+      expect(res.code).to.equal(1);
+      expect(res.stderr).to.contain('src/some.scss');
+    });
+
+    it('fixes stylesheets when --fix flag is given', () => {
+      const css = `.hello { color: #000;
+      }`;
+      const res = test
+        .setup({
+          'src/some.scss': css,
+          'package.json': JSON.stringify({
+            name: 'a',
+            version: '1.0.0',
+            stylelint: {
+              extends: 'stylelint-config-yoshi',
+            },
+          }),
+        })
+        .execute('lint', '--fix');
+
+      expect(res.code).to.equal(0);
+      expect(test.content('src/some.scss')).not.to.equal(css);
+    });
+
     it('should use yoshi-stylelint', () => {
       const goodStyle = `
 p {
@@ -234,8 +288,7 @@ p {
         })
         .execute('lint', []);
 
-      expect(res.stdout).to.contain(`Starting 'stylelint'`);
-      expect(res.stdout).to.contain(`Finished 'stylelint'`);
+      expect(res.stdout).to.contain(`running stylelint`);
       expect(res.code).to.equal(0);
     });
 
@@ -265,7 +318,7 @@ p {
         })
         .execute('lint', []);
 
-      expect(res.stderr).to.contain('✖  Expected no more than 1 empty line');
+      expect(res.stderr).to.contain('Expected no more than 1 empty line');
       expect(res.stderr).to.contain('max-empty-lines');
       expect(res.code).to.equal(1);
     });
@@ -296,7 +349,7 @@ p {
         })
         .execute('lint', ['src/a.less', 'src/b.scss']);
 
-      expect(res.stderr).to.contain('✖  Expected no more than 1 empty line');
+      expect(res.stderr).to.contain('Expected no more than 1 empty line');
       expect(res.stderr).to.contain('src/a.less');
       expect(res.stderr).to.contain('src/b.scss');
       expect(res.stderr).to.not.contain('src/dontrunonme.scss');
