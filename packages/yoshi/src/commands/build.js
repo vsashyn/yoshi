@@ -18,7 +18,6 @@ const {
 const {
   watchMode,
   isTypescriptProject,
-  isBabelProject,
   shouldExportModule,
   shouldRunWebpack,
   shouldRunLess,
@@ -29,6 +28,16 @@ const { printAndExitOnErrors } = require('../error-handler');
 const runner = createRunner({
   logger: new LoggerPlugin(),
 });
+
+const babelOptions = {
+  babelrc: false,
+  presets: [require.resolve('babel-preset-yoshi')],
+};
+
+const babelEsmOptions = {
+  babelrc: false,
+  presets: [require.resolve('babel-preset-yoshi'), { modules: 'commonjs' }],
+};
 
 const shouldWatch = watchMode();
 const cliArgs = parseArgs(process.argv.slice(2));
@@ -245,47 +254,38 @@ module.exports = runner.command(
     function transpileJavascript({ esTarget } = {}) {
       const transpilations = [];
 
-      if (isTypescriptProject() && runIndividualTranspiler) {
-        transpilations.push(
-          typescript({
-            project: 'tsconfig.json',
-            rootDir: '.',
-            outDir: globs.dist({ esTarget }),
-            ...(esTarget ? { module: 'es2015' } : {}),
-          }),
-        );
-        if (esTarget) {
+      if (runIndividualTranspiler) {
+        if (isTypescriptProject()) {
           transpilations.push(
             typescript({
               project: 'tsconfig.json',
               rootDir: '.',
-              outDir: globs.dist({ esTarget: false }),
-              module: 'commonjs',
+              outDir: globs.dist({ esTarget }),
+              ...(esTarget ? { module: 'es2015' } : {}),
             }),
           );
-        }
-      } else if (isBabelProject() && runIndividualTranspiler) {
-        transpilations.push(
-          babel(
-            {
-              pattern: globs.babel,
-              target: globs.dist({ esTarget }),
-            },
-            {
-              title: 'babel',
-            },
-          ),
-        );
-        if (esTarget) {
+        } else {
           transpilations.push(
-            babel({
-              pattern: globs.babel,
-              target: globs.dist({ esTarget: false }),
-              plugins: [
-                require.resolve('@babel/plugin-transform-modules-commonjs'),
-              ],
-            }),
+            babel(
+              {
+                pattern: globs.babel,
+                target: globs.dist({ esTarget }),
+                ...babelOptions,
+              },
+              {
+                title: 'babel',
+              },
+            ),
           );
+          if (esTarget) {
+            transpilations.push(
+              babel({
+                pattern: globs.babel,
+                target: globs.dist({ esTarget: false }),
+                ...babelEsmOptions,
+              }),
+            );
+          }
         }
       }
 

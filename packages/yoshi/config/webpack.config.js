@@ -393,6 +393,14 @@ function createCommonWebpackConfig({
             },
             {
               loader: 'babel-loader',
+              options: {
+                ...(project.experimentalServerBundle
+                  ? {
+                      babelrc: false,
+                      presets: [require.resolve('babel-preset-yoshi')],
+                    }
+                  : {}),
+              },
             },
           ],
         },
@@ -699,6 +707,7 @@ function createServerWebpackConfig({ isDebug = true } = {}) {
             };
           }
 
+          // Override typescript options to transpile server to current node
           if (rule.loader === 'ts-loader') {
             return {
               ...rule,
@@ -713,6 +722,31 @@ function createServerWebpackConfig({ isDebug = true } = {}) {
                   // use async/await instead of embedding polyfills
                   target: 'es2017',
                 },
+              },
+            };
+          }
+
+          // Override babel options to transpile server to current node
+          if (rule.loader === 'babel-loader') {
+            return {
+              ...rule,
+
+              options: {
+                ...rule.options,
+
+                presets: rule.options.presets.map(
+                  preset =>
+                    preset[0] !== require.resolve('babel-preset-yoshi')
+                      ? preset
+                      : [
+                          require.resolve('babel-preset-yoshi'),
+                          {
+                            targets: {
+                              node: 'current',
+                            },
+                          },
+                        ],
+                ),
               },
             };
           }

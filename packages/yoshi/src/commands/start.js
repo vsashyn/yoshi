@@ -31,7 +31,7 @@ const {
 const globs = require('yoshi-config/globs');
 const {
   isTypescriptProject,
-  isBabelProject,
+  runIndividualTranspiler,
   shouldRunLess,
   shouldRunSass,
   shouldTransformHMRRuntime,
@@ -46,6 +46,13 @@ const openBrowser = require('react-dev-utils/openBrowser');
 const runner = createRunner({
   logger: new LoggerPlugin(),
 });
+
+const babelOptions = {
+  babelrc: false,
+  presets: [require.resolve('babel-preset-yoshi')],
+  target: 'dist',
+  sourceMaps: true,
+};
 
 const addJsSuffix = suffix('.js');
 const shouldRunTests = cliArgs['with-tests'] === true;
@@ -265,24 +272,21 @@ module.exports = runner.command(
         return appServer();
       }
 
-      if (isBabelProject()) {
-        watch(
-          { pattern: [path.join(globs.base, '**', '*.js{,x}'), 'index.js'] },
-          async changed => {
-            await babel({ pattern: changed, target: 'dist', sourceMaps: true });
-            await appServer();
-          },
-        );
+      watch(
+        { pattern: [path.join(globs.base, '**', '*.js{,x}'), 'index.js'] },
+        async changed => {
+          await babel({
+            pattern: changed,
+            ...babelOptions,
+          });
+          await appServer();
+        },
+      );
 
-        await babel({
-          pattern: [path.join(globs.base, '**', '*.js{,x}'), 'index.js'],
-          target: 'dist',
-          sourceMaps: true,
-        });
-        return appServer();
-      }
-
-      watch({ pattern: globs.babel }, appServer);
+      await babel({
+        pattern: [path.join(globs.base, '**', '*.js{,x}'), 'index.js'],
+        ...babelOptions,
+      });
 
       return appServer();
     }
