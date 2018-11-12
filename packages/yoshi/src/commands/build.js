@@ -31,12 +31,12 @@ const runner = createRunner({
 
 const babelOptions = {
   babelrc: false,
-  presets: [require.resolve('babel-preset-yoshi')],
+  presets: [[require.resolve('babel-preset-yoshi'), { modules: false }]],
 };
 
 const babelEsmOptions = {
   babelrc: false,
-  presets: [require.resolve('babel-preset-yoshi'), { modules: 'commonjs' }],
+  presets: [[require.resolve('babel-preset-yoshi'), { modules: 'commonjs' }]],
 };
 
 const shouldWatch = watchMode();

@@ -426,9 +426,6 @@ describe('Aggregator: Build', () => {
       test = tp.create();
       resp = test
         .setup({
-          '.babelrc': `{"presets": ["${require.resolve(
-            'babel-preset-yoshi',
-          )}"]}`,
           'src/a.js': `import {xxx} from './b'; console.log(xxx);`,
           'src/b.js': `export const xxx = 111111; export const yyy = 222222;`,
           'package.json': fx.packageJson({
@@ -509,9 +506,6 @@ describe('Aggregator: Build', () => {
 
       resp = test
         .setup({
-          '.babelrc': `{"presets": [["${require.resolve(
-            '@babel/preset-env',
-          )}", {"modules": false}]]}`,
           'src/a.js': `export default "I'm a module!"; import './a.scss'; import './a.st.css'; require('lodash/map')`,
           'src/a.scss': `.x {.y {display: flex;}}`,
           'src/a.st.css': `.root {.stylableClass {color: pink;}}`,
@@ -912,20 +906,6 @@ describe('Aggregator: Build', () => {
     });
 
     describe('build project w/o individual transpilation', () => {
-      it('should not transpile if no tsconfig/babelrc', () => {
-        const resp = test
-          .setup({
-            'src/b.ts': 'const b = 2;',
-            'src/a/a.js': 'const a = 1;',
-            'package.json': fx.packageJson(),
-          })
-          .execute('build');
-
-        expect(resp.stdout).to.not.contain(`Finished 'babel'`);
-        expect(resp.code).to.equal(0);
-        expect(test.list('/')).not.to.include('dist');
-      });
-
       it('should not transpile if runIndividualTranspiler = false', () => {
         const resp = test
           .setup({
@@ -1069,7 +1049,7 @@ describe('Aggregator: Build', () => {
           .setup({
             'src/client.js': `const aFunction = require('./dep');const a = aFunction(1);`,
             'src/dep.js': `module.exports = a => {`,
-            'package.json': fx.packageJson(),
+            'package.json': fx.packageJson({ runIndividualTranspiler: false }),
             'pom.xml': fx.pom(),
           })
           .execute('build');
@@ -1105,9 +1085,6 @@ describe('Aggregator: Build', () => {
             'src/foo.js': "console.log('bar')",
             'package.json': JSON.stringify({
               name: 'my-project',
-              babel: {
-                presets: [require.resolve('babel-preset-yoshi')],
-              },
             }),
           })
           .execute('build');

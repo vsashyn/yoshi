@@ -61,7 +61,6 @@ describe('Aggregator: Start', () => {
               className: PropTypes.string
             };`,
               'src/styles.css': `.a { color: red }`,
-              '.babelrc': `{"presets": ["babel-preset-yoshi"]}`,
               'package.json': fx.packageJson(),
             })
             .spawn('start', '--production');
@@ -279,7 +278,6 @@ describe('Aggregator: Start', () => {
           .setup({
             'src/client.js': `import { render } from 'react-dom';
               render(<App />, rootEl);`,
-            '.babelrc': `{"presets": ["babel-preset-yoshi"]}`,
             'package.json': fx.packageJson(
               {
                 hmr: 'auto',
@@ -306,7 +304,6 @@ describe('Aggregator: Start', () => {
           .setup({
             'src/client.js': `import { render } from 'react-dom';
               render(<App />, rootEl);`,
-            '.babelrc': `{"presets": ["babel-preset-yoshi"]}`,
             'package.json': fx.packageJson(
               {
                 hmr: 'auto',

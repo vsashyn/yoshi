@@ -49,7 +49,7 @@ const runner = createRunner({
 
 const babelOptions = {
   babelrc: false,
-  presets: [require.resolve('babel-preset-yoshi')],
+  presets: [[require.resolve('babel-preset-yoshi')]],
   target: 'dist',
   sourceMaps: true,
 };
