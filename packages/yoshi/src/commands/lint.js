@@ -4,6 +4,7 @@ const { createRunner } = require('haste-core');
 const parseArgs = require('minimist');
 const tslint = require('../tasks/tslint');
 const eslint = require('../tasks/eslint');
+const stylelint = require('../tasks/stylelint');
 const LoggerPlugin = require('../plugins/haste-plugin-yoshi-logger');
 const globs = require('yoshi-config/globs');
 
@@ -23,12 +24,11 @@ const runner = createRunner({
 const shouldWatch = watchMode();
 const cliArgs = parseArgs(process.argv.slice(2));
 
-module.exports = runner.command(async tasks => {
+module.exports = runner.command(async () => {
   if (shouldWatch) {
     return;
   }
 
-  const { stylelint } = tasks;
   // Variadic arguments are placed inside the "_" property array
   // https://github.com/substack/minimist#var-argv--parseargsargs-opts
   // The first argument is the command itself (lint), we retrieve all the rest
@@ -69,11 +69,9 @@ module.exports = runner.command(async tasks => {
   }
 
   function runStyleLint(pattern) {
-    console.log(`running style lint on ${pattern}`);
-
-    return printAndExitOnErrors(() =>
-      stylelint({ pattern, options: { formatter: 'string' } }),
-    );
+    return printAndExitOnErrors(async () => {
+      await stylelint({ pattern, fix: cliArgs.fix });
+    });
   }
 
   async function runTsLint(pattern) {
