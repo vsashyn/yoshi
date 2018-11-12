@@ -260,10 +260,20 @@ module.exports = runner.command(
             typescript({
               project: 'tsconfig.json',
               rootDir: '.',
-              outDir: globs.dist({ esTarget }),
-              ...(esTarget ? { module: 'es2015' } : {}),
+              outDir: globs.dist({ esTarget: false }),
+              module: 'commonjs',
             }),
           );
+          if (esTarget) {
+            transpilations.push(
+              typescript({
+                project: 'tsconfig.json',
+                rootDir: '.',
+                outDir: globs.dist({ esTarget: true }),
+                module: 'es2015',
+              }),
+            );
+          }
         } else {
           transpilations.push(
             babel(

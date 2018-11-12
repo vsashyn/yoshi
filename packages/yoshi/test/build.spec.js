@@ -44,9 +44,6 @@ describe('Aggregator: Build', () => {
       resp = test
         .setup(
           {
-            '.babelrc': `{"presets": [["${require.resolve(
-              '@babel/preset-env',
-            )}", {"modules": false}]]}`,
             '.bowerrc': JSON.stringify(bowerrc, null, 2),
             'petri-specs/specs.infra.Dummy.json': fx.petriSpec(),
             'src/a.js': 'export default "I\'m a module!";',
@@ -241,7 +238,7 @@ describe('Aggregator: Build', () => {
 
       it('should not create `/es` directory if no `module` field in `package.json` was specified and no commonjs plugin added', () => {
         expect(test.list('dist')).to.not.include('es');
-        expect(test.content('dist/src/a.js')).to.contain('export default');
+        expect(test.content('dist/src/a.js')).to.contain('exports.default');
       });
     });
 
