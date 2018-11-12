@@ -261,7 +261,6 @@ module.exports = runner.command(
               project: 'tsconfig.json',
               rootDir: '.',
               outDir: globs.dist({ esTarget: false }),
-              module: 'commonjs',
             }),
           );
           if (esTarget) {
