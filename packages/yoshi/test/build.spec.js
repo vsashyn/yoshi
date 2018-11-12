@@ -906,7 +906,6 @@ describe('Aggregator: Build', () => {
       it('should not transpile if runIndividualTranspiler = false', () => {
         const resp = test
           .setup({
-            '.babelrc': '{}',
             'src/b.ts': 'const b = 2;',
             'src/a/a.js': 'const a = 1;',
             'package.json': fx.packageJson({
@@ -942,7 +941,6 @@ describe('Aggregator: Build', () => {
         it('should fail with exit code 1', () => {
           const resp = test
             .setup({
-              '.babelrc': '{}',
               'src/a.js': 'function ()',
               'package.json': fx.packageJson(),
               'pom.xml': fx.pom(),
@@ -1013,7 +1011,6 @@ describe('Aggregator: Build', () => {
       it('should fail when a module has missing exports', () => {
         const resp = test
           .setup({
-            '.babelrc': '{}',
             'src/client.js': `import { hello } from './hello'; console.log(hello);`,
             'src/hello.js': `const hello = 'world'; export default 'world';`,
             'package.json': fx.packageJson(),

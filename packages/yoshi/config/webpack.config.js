@@ -394,12 +394,8 @@ function createCommonWebpackConfig({
             {
               loader: 'babel-loader',
               options: {
-                ...(project.experimentalServerBundle
-                  ? {
-                      babelrc: false,
-                      presets: [[require.resolve('babel-preset-yoshi')]],
-                    }
-                  : {}),
+                babelrc: false,
+                presets: [[require.resolve('babel-preset-yoshi')]],
               },
             },
           ],
