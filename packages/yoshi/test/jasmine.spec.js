@@ -43,7 +43,6 @@ describe('test --jasmine', () => {
         'test/bar.js': 'export default 5;',
         'test/some.spec.js': `import foo from './bar';`,
         'package.json': fx.packageJson({ transpileTests: false }),
-        '.babelrc': JSON.stringify({ presets: ['yoshi'] }),
       })
       .execute('test', ['--jasmine']);
     expect(res.code).to.equal(1);
