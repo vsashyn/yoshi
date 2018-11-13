@@ -1,3 +1,16 @@
+
+/// <reference types="react" />
+/// <reference types="react-dom" />
+
+declare module '*.svg' {
+  import * as React from 'react';
+
+  export const ReactComponent: React.SFC<React.SVGProps<SVGSVGElement>>;
+
+  const src: string;
+  export default src;
+}
+
 declare module 'wix-run-mode';
 declare module 'serialize-javascript';
 declare module '*.scss';
