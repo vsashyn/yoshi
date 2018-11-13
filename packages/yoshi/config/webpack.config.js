@@ -38,7 +38,7 @@ const {
 
 const reScript = /\.js?$/;
 const reStyle = /\.(css|less|scss|sass)$/;
-const reAssets = /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|otf|eot|wav|mp3)$/;
+const reAssets = /\.(png|jpg|jpeg|gif|woff|woff2|ttf|otf|eot|wav|mp3)$/;
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json'];
 
@@ -433,7 +433,25 @@ function createCommonWebpackConfig({
             },
           ],
         },
-
+        // Allows you to use two kinds of imports for SVG:
+        // import logoUrl from './logo.svg'; gives you the URL.
+        // import { ReactComponent as Logo } from './logo.svg'; gives you a component.
+        {
+          test: /\.svg$/,
+          issuer: {
+            test: /\.(j|t)sx?$/,
+          },
+          use: [
+            require.resolve('@svgr/webpack'),
+            {
+              loader: 'url-loader',
+              options: {
+                name: '[path][name].[ext]?[hash]',
+                limit: 10000,
+              },
+            },
+          ],
+        },
         // Rules for Markdown
         {
           test: /\.md$/,

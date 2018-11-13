@@ -158,7 +158,7 @@ describe('Loaders', () => {
     });
 
     describe('SVG-loader', () => {
-      it('should run svg loader', () => {
+      it('should run svg inline loader', () => {
         expect(test.content('dist/statics/app.bundle.js')).to.contain(
           svgModule,
         );
@@ -541,6 +541,27 @@ describe('Loaders', () => {
           )
           .execute('build');
       }
+    });
+  });
+
+  describe('svg', () => {
+    let test;
+    beforeEach(() => (test = tp.create()));
+    afterEach(() => test.teardown());
+
+    it('load svg as a react component', () => {
+      const res = test
+        .setup({
+          'src/client.js': `import React from 'react'; \nimport logoUrl, { ReactComponent as Logo } from './image.svg';`,
+          'src/image.svg': '<svg><g><path fill="#EEEEEE"></path></g></svg>',
+          'package.json': fx.packageJson(),
+        })
+        .execute('build');
+
+      expect(res.code).to.equal(0);
+      expect(test.content('dist/statics/app.bundle.js')).to.contain(
+        'createElement("svg"',
+      );
     });
   });
 });
