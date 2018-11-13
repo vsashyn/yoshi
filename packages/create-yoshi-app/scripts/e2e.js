@@ -85,14 +85,24 @@ const testTemplate = mockedAnswers => {
     describe('npm start', () => {
       let browser;
       let child;
+      let page;
+      let consoleMessages;
       const serverPort = 3000;
-      afterEach(async () => {
-        await browser.close();
-        return killSpawnProcessAndHisChildren(child);
+
+      before(async () => {
+        browser = await puppeteer.launch();
       });
 
+      after(() => browser.close());
+
+      beforeEach(async () => {
+        page = await browser.newPage();
+        consoleMessages = [];
+      });
+
+      afterEach(() => killSpawnProcessAndHisChildren(child));
+
       it('should render a page without errors', async () => {
-        const consoleMessages = [];
         child = execa.shell('npm start', {
           cwd: tempDir,
           stdio,
@@ -100,13 +110,13 @@ const testTemplate = mockedAnswers => {
 
         await waitPort({ port: serverPort, output: 'silent' });
 
-        browser = await puppeteer.launch();
-        const page = await browser.newPage();
         page.on('console', msg => consoleMessages.push(msg));
         await page.goto(`http://localhost:${serverPort}`);
-        const errors = consoleMessages.filter(e => e.type() !== 'debug');
+        const errors = consoleMessages.filter(
+          errore => errore.type() !== 'debug',
+        );
 
-        expect(errors.map(e => e.text())).toEqual([]);
+        expect(errors.map(error => error.text())).toEqual([]);
       });
     });
   });
