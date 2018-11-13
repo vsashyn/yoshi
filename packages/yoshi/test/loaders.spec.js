@@ -548,20 +548,44 @@ describe('Loaders', () => {
     let test;
     beforeEach(() => (test = tp.create()));
     afterEach(() => test.teardown());
+    describe('javascript', () => {
+      it('load svg as a react component', () => {
+        const res = test
+          .setup({
+            'src/client.js': `import React from 'react'; \nimport imageUrl, { ReactComponent as Image } from './image.svg';`,
+            'src/image.svg': '<svg><g><path fill="#EEEEEE"></path></g></svg>',
+            'package.json': fx.packageJson(),
+          })
+          .execute('build');
 
-    it('load svg as a react component', () => {
-      const res = test
-        .setup({
-          'src/client.js': `import React from 'react'; \nimport logoUrl, { ReactComponent as Logo } from './image.svg';`,
-          'src/image.svg': '<svg><g><path fill="#EEEEEE"></path></g></svg>',
-          'package.json': fx.packageJson(),
-        })
-        .execute('build');
+        expect(res.code).to.equal(0);
+        expect(test.content('dist/statics/app.bundle.js')).to.contain(
+          'createElement("svg"',
+        );
+      });
+    });
 
-      expect(res.code).to.equal(0);
-      expect(test.content('dist/statics/app.bundle.js')).to.contain(
-        'createElement("svg"',
-      );
+    describe('typescript', () => {
+      it('load svg as a react component', () => {
+        const res = test
+          .setup({
+            'src/client.ts': `import * as React from 'react'; \nimport { ReactComponent as Image } from './image.svg';\n console.log(Image);`,
+            'tsconfig.json': fx.tsconfig({
+              include: ['external-types.d.ts'],
+            }),
+            'external-types.d.ts': `
+            declare module '*.svg';
+            `,
+            'src/image.svg': '<svg><g><path fill="#EEEEEE"></path></g></svg>',
+            'package.json': fx.packageJson(),
+          })
+          .execute('build');
+
+        expect(res.code).to.equal(0);
+        expect(test.content('dist/statics/app.bundle.js')).to.contain(
+          'createElement("svg"',
+        );
+      });
     });
   });
 });
