@@ -314,6 +314,20 @@ describe('Aggregator: Test', () => {
               .someclass {
                 color: yellow;
             }`,
+        '__tests__/svg.test.js': `
+            import React from 'react';
+            import imageUrl, { ReactComponent as Image } from '../assets/image.svg';
+
+            it('should be able to import svg as a react component (reactComponent)', () => {
+              expect(typeof Image).toBe('function');
+            });
+
+            it('should be able to import svg as a url (default)', () => {
+              expect(typeof imageUrl).toBe('string');
+            });
+            `,
+        'assets/image.svg':
+          '<svg height="210" width="400"><path d="M150 0 L75 200 L225 200 Z" /></svg>',
         'foo.js': `
               const s = require('./foo.scss');
               module.exports = function() {
@@ -354,7 +368,7 @@ describe('Aggregator: Test', () => {
       });
 
       it('should pass all tests', () => {
-        expect(res.stderr).to.contain('5 passed, 5 total');
+        expect(res.stderr).to.contain('7 passed, 7 total');
       });
 
       it('should not try to start cdn', () => {
@@ -593,7 +607,7 @@ describe('Aggregator: Test', () => {
   describe('--mocha', () => {
     let test;
     let res;
-    const imageExtensions = ['png', 'svg', 'jpg', 'jpeg', 'gif'];
+    const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
     const audioExtensions = ['wav', 'mp3'];
     before(() => {
       test = tp.create();
@@ -658,6 +672,20 @@ describe('Aggregator: Test', () => {
               assert.equal((await (await fetch('http://localhost:3200/index.html')).text()).trim(), 'hello world')
               console.log('passed e2e');
             });`,
+          'test/svg.spec.js': `
+            import React from 'react';
+            import imageUrl, { ReactComponent as Image } from '../assets/image.svg';
+            import assert from 'assert';
+
+            it.skip('should be able to import svg as a react component (reactComponent)', () => {
+              assert.equal(typeof Image, 'function');
+            });
+
+            it.skip('should be able to import svg as a url (default)', () => {
+              assert.equal(typeof imageUrl, 'string');
+            });`,
+          'assets/image.svg':
+            '<svg height="210" width="400"><path d="M150 0 L75 200 L225 200 Z" /></svg>',
           'src/some.scss': '',
           'package.json': `{
             "name": "a",

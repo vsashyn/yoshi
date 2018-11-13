@@ -17,7 +17,7 @@ require.extensions['.graphql'] = loadGraphQLModules;
 require.extensions['.gql'] = loadGraphQLModules;
 
 require.extensions['.png'] = mockMediaModules;
-require.extensions['.svg'] = mockMediaModules;
+require.extensions['.svg'] = mockSvg;
 require.extensions['.jpg'] = mockMediaModules;
 require.extensions['.jpeg'] = mockMediaModules;
 require.extensions['.gif'] = mockMediaModules;
@@ -59,4 +59,14 @@ function loadGraphQLModules(module) {
 
 function mockMediaModules(module) {
   module.exports = path.basename(module.filename);
+}
+
+function mockSvg(module) {
+  const svgFilename = JSON.stringify(path.basename(module.filename));
+
+  module.exports = {
+    __esModule: true,
+    default: svgFilename,
+    ReactComponent: () => svgFilename,
+  };
 }
