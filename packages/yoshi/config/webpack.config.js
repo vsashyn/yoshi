@@ -15,7 +15,6 @@ const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const DynamicPublicPath = require('../src/webpack-plugins/dynamic-public-path');
 const { localIdentName } = require('../src/constants');
 const EnvirnmentMarkPlugin = require('../src/webpack-plugins/environment-mark-plugin');
 
@@ -581,9 +580,6 @@ function createClientWebpackConfig({
             new RtlCssPlugin(isDebug ? '[name].rtl.css' : '[name].rtl.min.css'),
           ]
         : []),
-
-      // Hacky way of correcting Webpack's publicPath
-      new DynamicPublicPath(),
 
       // https://webpack.js.org/plugins/define-plugin/
       new webpack.DefinePlugin({
