@@ -187,29 +187,6 @@ describe('Webpack basic configs', () => {
           `__webpack_require__.p = "https://static.parastorage.com/unpkg/my-package@2.3.4/dist/statics"`,
         );
       });
-
-      it('should prepend dynamic public path (AKA __webpack_public_path__)', () => {
-        test
-          .setup({
-            'src/image.jpg': '(^_^)'.repeat(2500),
-            'src/client.js': `const img = require('./image.jpg');`,
-          })
-          .execute('build');
-
-        const content = test.content('dist/statics/app.bundle.js');
-        const value = `typeof window !== 'undefined' && window.__STATICS_BASE_URL__ || __webpack_require__.p;`;
-
-        // Make sure it was the last override of __webpack_require__.p
-        expect(
-          content
-            .split('__webpack_require__.p = ')
-            .pop()
-            .indexOf(value),
-        ).to.equal(0);
-        expect(content).to.contain(
-          'module.exports = __webpack_require__.p + "assets/image.jpg?',
-        );
-      });
     });
   });
 
