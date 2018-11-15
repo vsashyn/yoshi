@@ -72,6 +72,7 @@ class Test {
           }
           this.stderr += stripAnsi(buffer.toString());
         });
+        console.log(sh.exec('lsof | grep inotify'));
         return this.child;
       } catch (e) {
         console.log(`Error running ${this.script} ${command}: ${e}`); // TODO: Use logger?

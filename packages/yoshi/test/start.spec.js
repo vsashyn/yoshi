@@ -603,6 +603,7 @@ describe('Aggregator: Start', () => {
               'package.json': fx.packageJson(),
               'pom.xml': fx.pom(),
             })
+            .verbose()
             .spawn('start');
 
           return checkServerIsServing({ max: 100 })
