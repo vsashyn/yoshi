@@ -62,6 +62,8 @@ const computedSeparateCss =
 
 const artifactVersion = process.env.ARTIFACT_VERSION;
 
+const staticAssetName = 'assets/[name].[ext]?[hash]';
+
 // default public path
 let publicPath = '/';
 
@@ -434,7 +436,7 @@ function createCommonWebpackConfig({
                 {
                   loader: 'url-loader',
                   options: {
-                    name: '[path][name].[ext]?[hash]',
+                    name: staticAssetName,
                     limit: 10000,
                   },
                 },
@@ -470,7 +472,7 @@ function createCommonWebpackConfig({
               test: reAssets,
               loader: 'url-loader',
               options: {
-                name: 'assets/[name].[ext]?[hash]',
+                name: staticAssetName,
                 limit: 10000,
               },
             },

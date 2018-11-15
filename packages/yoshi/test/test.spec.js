@@ -677,11 +677,11 @@ describe('Aggregator: Test', () => {
             import imageUrl, { ReactComponent as Image } from '../assets/image.svg';
             import assert from 'assert';
 
-            it.skip('should be able to import svg as a react component (reactComponent)', () => {
+            it('should be able to import svg as a react component (reactComponent)', () => {
               assert.equal(typeof Image, 'function');
             });
 
-            it.skip('should be able to import svg as a url (default)', () => {
+            it('should be able to import svg as a url (default)', () => {
               assert.equal(typeof imageUrl, 'string');
             });`,
           'assets/image.svg':
