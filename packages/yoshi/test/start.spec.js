@@ -590,7 +590,7 @@ describe('Aggregator: Start', () => {
 
       describe('when using typescript', () => {
         // currently is not passing in the CI, needs debugging
-        it.skip(`should rebuild and restart server after a file has been changed with typescript files`, () => {
+        it.only(`should rebuild and restart server after a file has been changed with typescript files`, () => {
           child = test
             .setup({
               'tsconfig.json': fx.tsconfig(),
