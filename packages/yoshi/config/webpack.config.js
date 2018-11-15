@@ -421,6 +421,49 @@ function createCommonWebpackConfig({
               loader: 'svg-inline-loader',
             },
 
+            // Allows you to use two kinds of imports for SVG:
+            // import logoUrl from './logo.svg'; gives you the URL.
+            // import { ReactComponent as Logo } from './logo.svg'; gives you a component.
+            {
+              test: /\.svg$/,
+              issuer: {
+                test: /\.(j|t)sx?$/,
+              },
+              use: [
+                require.resolve('@svgr/webpack'),
+                {
+                  loader: 'url-loader',
+                  options: {
+                    name: '[path][name].[ext]?[hash]',
+                    limit: 10000,
+                  },
+                },
+              ],
+            },
+            // Rules for Markdown
+            {
+              test: /\.md$/,
+              loader: 'raw-loader',
+            },
+
+            // Rules for HAML
+            {
+              test: /\.haml$/,
+              loader: 'ruby-haml-loader',
+            },
+
+            // Rules for HTML
+            {
+              test: /\.html$/,
+              loader: 'html-loader',
+            },
+
+            // Rules for GraphQL
+            {
+              test: /\.(graphql|gql)$/,
+              include: project.unprocessedModules,
+              loader: 'graphql-tag/loader',
+            },
             // Try to inline assets as base64 or return a public URL to it if it passes
             // the 10kb limit
             {
@@ -432,49 +475,6 @@ function createCommonWebpackConfig({
               },
             },
           ],
-        },
-        // Allows you to use two kinds of imports for SVG:
-        // import logoUrl from './logo.svg'; gives you the URL.
-        // import { ReactComponent as Logo } from './logo.svg'; gives you a component.
-        {
-          test: /\.svg$/,
-          issuer: {
-            test: /\.(j|t)sx?$/,
-          },
-          use: [
-            require.resolve('@svgr/webpack'),
-            {
-              loader: 'url-loader',
-              options: {
-                name: '[path][name].[ext]?[hash]',
-                limit: 10000,
-              },
-            },
-          ],
-        },
-        // Rules for Markdown
-        {
-          test: /\.md$/,
-          loader: 'raw-loader',
-        },
-
-        // Rules for HAML
-        {
-          test: /\.haml$/,
-          loader: 'ruby-haml-loader',
-        },
-
-        // Rules for HTML
-        {
-          test: /\.html$/,
-          loader: 'html-loader',
-        },
-
-        // Rules for GraphQL
-        {
-          test: /\.(graphql|gql)$/,
-          include: project.unprocessedModules,
-          loader: 'graphql-tag/loader',
         },
       ],
     },
