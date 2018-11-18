@@ -106,19 +106,23 @@ const testTemplate = mockedAnswers => {
         child = execa.shell('npm start', {
           cwd: tempDir,
           stdio,
+          env: {
+            TEAMCITY_VERSION: '',
+            BUILD_NUMBER: '',
+            ARTIFACT_VERSION: '',
+          },
         });
 
         await waitPort({ port: serverPort, output: 'silent' });
 
-        // page.on('console', msg => consoleMessages.push(msg));
+        page.on('console', msg => consoleMessages.push(msg));
         await page.goto(`http://localhost:${serverPort}`);
-        // const errors = consoleMessages.filter(
-        //   error => error.type() !== 'debug',
-        // );
+        const errors = consoleMessages.filter(
+          error => error.type() !== 'debug',
+        );
 
-        // errors.map(e => console.log(e));
-        // expect(errors.map(error => error.text())).toEqual([]);
-        console.log(await page.evaluate(() => document.body.innerHTML)); // eslint-disable-line
+        errors.map(e => console.log(e));
+        expect(errors.map(error => error.text())).toEqual([]);
       });
     });
   });
