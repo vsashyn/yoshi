@@ -87,7 +87,7 @@ module.exports = runner.command(
 
     if (cliArgs.mocha) {
       if (shouldRunPuppeteer) {
-        specsPattern.push(globs.protractor);
+        specsPattern.push(globs.e2eTests);
         await bootstrapCdn();
       }
 

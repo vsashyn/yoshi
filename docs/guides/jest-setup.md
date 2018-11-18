@@ -8,7 +8,7 @@ sidebar_label: Jest Setup
 
 Yoshi defines a custom [Jest preset](https://jestjs.io/docs/en/configuration#preset-string) to enable zero-configuration testing for most apps.
 
-This preset configures Jest with 3 different project types ([learn more](https://jestjs.io/docs/en/configuration#projects-array-string-projectconfig)), each project uses a unique environment ([learn more](https://jestjs.io/docs/en/configuration#testenvironment-string)). Each environment sets up its own globals and is configured to run for every file that matches a certain glob pattern ([learn more](https://github.com/isaacs/node-glob)).
+This preset configures Jest with 2 different project types ([learn more](https://jestjs.io/docs/en/configuration#projects-array-string-projectconfig)), each project uses a unique environment ([learn more](https://jestjs.io/docs/en/configuration#testenvironment-string)). Each environment sets up its own globals and is configured to run for every file that matches a certain glob pattern ([learn more](https://github.com/isaacs/node-glob)).
 
 ## Installation
 
@@ -52,12 +52,12 @@ npx jest my-specific-test
 
 Run all tests of a spcific type (different [jest project](https://jestjs.io/docs/en/configuration#projects-array-string-projectconfig)).
 
-You can filter the tests using the display name (`e2e`, `component`, `server`) and choose more than one, separated by commas.
+You can filter the tests using the display name (`e2e`, `spec`)
 
-For example, running only server and component tests:
+For example, running only e2e tests:
 
 ```shell
-MATCH_ENV=server,component npx jest
+MATCH_ENV=e2e npx jest
 ```
 
 Run jest using watch mode
@@ -80,19 +80,11 @@ Yoshi serves the files from `dist/statics`. Make sure to run `npx yoshi build` b
 
 ## Environments
 
-### JSDOM (component)
+### JSDOM (spec)
 
-Sets up a standard [JSDOM](https://github.com/jsdom/jsdom) environment for component tests.
+Sets up a standard [JSDOM](https://github.com/jsdom/jsdom) environment for component and unit tests.
 
-It's configured for every file under `<rootDir>/src/**/*.spec.js`.
-
-### Bootstrap (server)
-
-An environment for testing your server (API) code. It starts up a different instance of your server ([wix-ng-bootstarp based](https://github.com/wix-platform/wix-node-platform)) for every test file.
-
-You sohuld define setup and teardown functions to start/stop your server and relevant mocks (learn more: [wix-bootstrap-testkit](https://github.com/wix-platform/wix-node-platform/tree/master/bootstrap/wix-bootstrap-testkit), [wix-rpc-testkit](https://github.com/wix-platform/wix-node-platform/tree/master/rpc/wix-rpc-testkit)).
-
-Runs for every test file matching `<rootDir>/test/server/**/*.spec.js`.
+It's configured for every file under `<rootDir>/**/*.spec.js`.
 
 ### Puppeteer (e2e)
 
@@ -100,7 +92,7 @@ An environment that pre-configures [Puppeteer](https://github.com/GoogleChrome/p
 
 It creates a global Browser instance ([learn more](https://github.com/GoogleChrome/puppeteer/blob/v1.5.0/docs/api.md#class-browser)) and a global Page instance ([learn more](https://github.com/GoogleChrome/puppeteer/blob/v1.5.0/docs/api.md#class-page)) for every test file. They're available as `global.browser` and `global.page` respectively.
 
-Runs for every file that matches `<rootDir>/test/e2e/**/*.spec.js`.
+Runs for every file that matches `<rootDir>/**/*.e2e.js`.
 
 ## Configuration
 
@@ -135,10 +127,9 @@ module.exports = {
 
 ### Setup Files
 
-If you want to run some code before your tests you can use one of the 3 following setup files (1 for each environment):
+If you want to run some code before your tests you can use one of the 2 following setup files (1 for each environment):
 
-- `<rootDir>/test/setup.component.(j|t)s`: JSDOM (component)
-- `<rootDir>/test/setup.server.(j|t)s`: Bootstrap (server)
+- `<rootDir>/test/setup.spec.(j|t)s`: JSDOM (spec)
 - `<rootDir>/test/setup.e2e.(j|t)s`: Puppeteer (e2e)
 
 These setup files are actually [Jests's `setupTestFrameworkScriptFile`](https://jestjs.io/docs/en/configuration#setuptestframeworkscriptfile-string)
