@@ -18,6 +18,7 @@
       "guides/enzyme-support",
       "guides/jest-setup",
       "guides/babel-setup",
+      "guides/stylelint-setup",
       "guides/export-es-modules",
       "guides/hmr",
       "guides/momentjs-optimization",
