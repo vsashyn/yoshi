@@ -121,7 +121,6 @@ const testTemplate = mockedAnswers => {
           error => error.type() !== 'debug',
         );
 
-        errors.map(e => console.log(e));
         expect(errors.map(error => error.text())).toEqual([]);
       });
     });
