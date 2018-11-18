@@ -114,6 +114,7 @@ const testTemplate = mockedAnswers => {
         });
 
         await waitPort({ port: serverPort, output: 'silent' });
+        await waitPort({ port: 3200, output: 'silent' });
 
         page.on('console', msg => consoleMessages.push(msg));
         await page.goto(`http://localhost:${serverPort}`);
