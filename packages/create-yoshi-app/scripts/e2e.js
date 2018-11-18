@@ -110,14 +110,15 @@ const testTemplate = mockedAnswers => {
 
         await waitPort({ port: serverPort, output: 'silent' });
 
-        page.on('console', msg => consoleMessages.push(msg));
+        // page.on('console', msg => consoleMessages.push(msg));
         await page.goto(`http://localhost:${serverPort}`);
-        const errors = consoleMessages.filter(
-          error => error.type() !== 'debug',
-        );
+        // const errors = consoleMessages.filter(
+        //   error => error.type() !== 'debug',
+        // );
 
-        errors.map(e => console.log(e));
-        expect(errors.map(error => error.text())).toEqual([]);
+        // errors.map(e => console.log(e));
+        // expect(errors.map(error => error.text())).toEqual([]);
+        expect(await page.$eval('h2', el => el.innerText === 'Hello World!'));
       });
     });
   });
