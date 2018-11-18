@@ -36,6 +36,7 @@ const {
   inTeamCity: checkInTeamCity,
   isTypescriptProject: checkIsTypescriptProject,
 } = require('yoshi-helpers');
+const { htmlTemplates } = require('yoshi-config/globs');
 
 const reScript = /\.js?$/;
 const reStyle = /\.(css|less|scss|sass)$/;
@@ -605,10 +606,13 @@ function createClientWebpackConfig({
       ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
 
       // https://github.com/jantimon/html-webpack-plugin
-      new HtmlWebpackPlugin({
-        filename: 'index.ejs',
-        template: 'index.ejs',
-      }),
+      ...globby.sync(htmlTemplates, { cwd: config.context }).map(
+        templatePath =>
+          new HtmlWebpackPlugin({
+            filename: path.basename(templatePath),
+            template: templatePath,
+          }),
+      ),
 
       new class HtmlAssetsPlugin {
         apply(compiler) {
@@ -616,18 +620,31 @@ function createClientWebpackConfig({
             HtmlWebpackPlugin.getHooks(
               compilation,
             ).beforeAssetTagGeneration.tap('HtmlAssetsPlugin', data => {
+              let publicPathReplacement, minReplacement;
+
+              if (data.outputName.endsWith('.ejs')) {
+                publicPathReplacement = '<%= baseStaticsUrl %>';
+                minReplacement = '<% if (!debug) { %>.min<% } %>';
+              } else if (data.outputName.endsWith('.vm')) {
+                publicPathReplacement = '${clientTopology.staticsBaseUrl}'; // eslint-disable-line
+                minReplacement = '#if(!${debug}).min#{end}'; // eslint-disable-line
+              } else {
+                throw new Error(
+                  `Unknown output template file ${
+                    data.outputName
+                  }. Did you remember to update the HtmlAssetsPlugin?`,
+                );
+              }
+
               data.assets.js = data.assets.js.map(jsScriptSrc =>
                 jsScriptSrc
-                  .replace(data.assets.publicPath, '<%= baseStaticsUrl %>')
-                  .replace(/(\.min)?\.js/, '<% if (!debug) { %>.min<% } %>.js'),
+                  .replace(data.assets.publicPath, publicPathReplacement)
+                  .replace(/(\.min)?\.js/, `${minReplacement}.js`),
               );
               data.assets.css = data.assets.css.map(cssLinkHref =>
                 cssLinkHref
-                  .replace(data.assets.publicPath, '<%= baseStaticsUrl %>')
-                  .replace(
-                    /(\.min)?\.css/,
-                    '<% if (!debug) { %>.min<% } %>.css',
-                  ),
+                  .replace(data.assets.publicPath, publicPathReplacement)
+                  .replace(/(\.min)?\.css/, `${minReplacement}.css`),
               );
               return data;
             });

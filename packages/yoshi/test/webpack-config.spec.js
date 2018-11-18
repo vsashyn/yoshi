@@ -402,6 +402,39 @@ describe('Webpack basic configs', () => {
         `<link href="<%= baseStaticsUrl %>app<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
       );
     });
+
+    it('should inject assets into a index.vm template', () => {
+      test = tp.create();
+      test.setup({
+        'package.json': fx.packageJson(),
+        'pom.xml': fx.pom(),
+        'src/index.vm': `
+          <html>
+            <head>
+              <title>Test Title</title>
+            </head>
+            <body>
+              <p id="change-me">Test Body</p>
+            </body>
+          </html>
+        `,
+        'src/client.js': `
+          import './check.css';
+          document.getElementById('change-me').innerHTML = 'Changed!'
+        `,
+        'src/check.css': `#change-me { color: red }`,
+      });
+
+      test.execute('build');
+
+      expect(test.content('dist/statics/index.vm')).to.contain(
+        `<script src="\${clientTopology.staticsBaseUrl}app.bundle#if(!\${debug}).min#{end}.js"></script>`,
+      );
+
+      expect(test.content('dist/statics/index.vm')).to.contain(
+        `<link href="\${clientTopology.staticsBaseUrl}app#if(!\${debug}).min#{end}.css" rel="stylesheet">`,
+      );
+    });
   });
 });
 

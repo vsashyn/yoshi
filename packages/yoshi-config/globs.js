@@ -27,4 +27,5 @@ module.exports = {
   },
   less: [`${base}/**/*.less`, `!${base}/assets/**/*`],
   scss: [`${base}/**/*.scss`, `!${base}/assets/**/*`],
+  htmlTemplates: `**/*.+(ejs|vm)`,
 };
