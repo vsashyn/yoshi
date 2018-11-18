@@ -76,10 +76,7 @@ module.exports.shouldRunLess = () => {
 };
 
 module.exports.hasE2ETests = () => {
-  return (
-    glob.sync(globs.protractor).length > 0 ||
-    glob.sync(globs.puppeteer).length > 0
-  );
+  return glob.sync(globs.e2eTests).length > 0;
 };
 
 module.exports.hasProtractorConfigFile = () => {

@@ -11,25 +11,15 @@ module.exports = {
   projects: [
     ...[
       {
-        displayName: 'component',
+        displayName: 'spec',
         testEnvironment: 'jsdom',
         testURL: 'http://localhost',
-        testMatch: ['<rootDir>/src/**/*.spec.(ts|js){,x}'],
-      },
-      {
-        displayName: 'server',
-        testEnvironment: require.resolve('jest-environment-yoshi-bootstrap'),
-        testMatch: ['<rootDir>/test/server/**/*.spec.(ts|js){,x}'],
-        setupFiles: [
-          require.resolve(
-            'jest-environment-yoshi-bootstrap/environment-setup.js',
-          ),
-        ],
+        testMatch: [`<rootDir>/${globs.unitTests}`],
       },
       {
         displayName: 'e2e',
         testEnvironment: require.resolve('jest-environment-yoshi-puppeteer'),
-        testMatch: [`<rootDir>/${globs.puppeteer}`],
+        testMatch: [`<rootDir>/${globs.e2eTests}`],
         setupFiles: [
           require.resolve(
             'jest-environment-yoshi-bootstrap/environment-setup.js',
