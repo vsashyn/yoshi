@@ -611,6 +611,7 @@ function createClientWebpackConfig({
           new HtmlWebpackPlugin({
             filename: path.basename(templatePath),
             template: templatePath,
+            minify: false,
           }),
       ),
 
