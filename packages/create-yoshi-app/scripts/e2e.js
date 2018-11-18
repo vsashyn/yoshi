@@ -14,9 +14,10 @@ const {
 const {
   killSpawnProcessAndHisChildren,
 } = require('../../../test-helpers/process');
+const { isTeamCity } = require('yoshi-helpers');
 
 // verbose logs and output
-const verbose = process.env.VERBOSE_TESTS;
+const verbose = process.env.VERBOSE_TESTS || isTeamCity();
 // A regex pattern to run a focus test on the matched projects types
 const focusProjectPattern = 'fullstack-typescript'; //process.env.FOCUS_PATTERN;
 
