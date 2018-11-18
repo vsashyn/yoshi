@@ -113,9 +113,10 @@ const testTemplate = mockedAnswers => {
         page.on('console', msg => consoleMessages.push(msg));
         await page.goto(`http://localhost:${serverPort}`);
         const errors = consoleMessages.filter(
-          errore => errore.type() !== 'debug',
+          error => error.type() !== 'debug',
         );
 
+        errors.map(e => console.log(e));
         expect(errors.map(error => error.text())).toEqual([]);
       });
     });
