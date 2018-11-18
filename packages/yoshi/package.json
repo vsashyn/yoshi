@@ -72,6 +72,7 @@
     "haste-task-webpack": "^0.3.3",
     "haste-test-utils": "~0.3.0",
     "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^4.0.0-beta.4",
     "import-local": "^2.0.0",
     "jasmine": "^3.1.0",
     "jasmine-reporters": "^2.2.0",

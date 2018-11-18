@@ -368,6 +368,41 @@ describe('Webpack basic configs', () => {
       test.teardown();
     });
   });
+
+  describe('html templates', () => {
+    it('should inject assets into an index.ejs template', () => {
+      test = tp.create();
+      test.setup({
+        'package.json': fx.packageJson(),
+        'pom.xml': fx.pom(),
+        'src/index.ejs': `
+          <html>
+            <head>
+              <title>Test Title</title>
+            </head>
+            <body>
+              <p id="change-me">Test Body</p>
+            </body>
+          </html>
+        `,
+        'src/client.js': `
+          import './check.css';
+          document.getElementById('change-me').innerHTML = 'Changed!'
+        `,
+        'src/check.css': `#change-me { color: red }`,
+      });
+
+      test.execute('build');
+
+      expect(test.content('dist/statics/index.ejs')).to.contain(
+        `<script src="<%= baseStaticsUrl %>app.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+      );
+
+      expect(test.content('dist/statics/index.ejs')).to.contain(
+        `<link href="<%= baseStaticsUrl %>app<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+      );
+    });
+  });
 });
 
 function fetchClientBundle({

@@ -6,6 +6,7 @@ const { isObject } = require('lodash');
 const nodeExternals = require('webpack-node-externals');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const StylableWebpackPlugin = require('@stylable/webpack-plugin');
@@ -63,17 +64,15 @@ const computedSeparateCss =
 const artifactVersion = process.env.ARTIFACT_VERSION;
 
 // default public path
-let publicPath = '/';
-
-if (isDevelopment) {
-  // Set the local dev-server url as a path
-  publicPath = project.servers.cdn.url;
-}
+let publicPath;
 
 // In case we are running in CI and there is a pom.xml file, change the public path according to the path on the cdn
 // The path is created using artifactName from pom.xml and artifact version from an environment param.
 if (shouldDeployToCDN()) {
   publicPath = getProjectCDNBasePath();
+} else {
+  // Set the local dev-server url as a path
+  publicPath = project.servers.cdn.url;
 }
 
 function exists(entry) {
@@ -436,7 +435,7 @@ function createCommonWebpackConfig({
 
         // Rules for Markdown
         {
-          test: /\.md$/,
+          test: /\.(md|ejs)$/,
           loader: 'raw-loader',
         },
 
@@ -604,6 +603,37 @@ function createClientWebpackConfig({
 
       // https://github.com/th0r/webpack-bundle-analyzer
       ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
+
+      // https://github.com/jantimon/html-webpack-plugin
+      new HtmlWebpackPlugin({
+        filename: 'index.ejs',
+        template: 'index.ejs',
+      }),
+
+      new class HtmlAssetsPlugin {
+        apply(compiler) {
+          compiler.hooks.compilation.tap('HtmlAssetsPlugin', compilation => {
+            HtmlWebpackPlugin.getHooks(
+              compilation,
+            ).beforeAssetTagGeneration.tap('HtmlAssetsPlugin', data => {
+              data.assets.js = data.assets.js.map(jsScriptSrc =>
+                jsScriptSrc
+                  .replace(data.assets.publicPath, '<%= baseStaticsUrl %>')
+                  .replace(/(\.min)?\.js/, '<% if (!debug) { %>.min<% } %>.js'),
+              );
+              data.assets.css = data.assets.css.map(cssLinkHref =>
+                cssLinkHref
+                  .replace(data.assets.publicPath, '<%= baseStaticsUrl %>')
+                  .replace(
+                    /(\.min)?\.css/,
+                    '<% if (!debug) { %>.min<% } %>.css',
+                  ),
+              );
+              return data;
+            });
+          });
+        }
+      }(),
     ],
 
     module: {
