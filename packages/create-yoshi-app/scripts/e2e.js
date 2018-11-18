@@ -118,7 +118,7 @@ const testTemplate = mockedAnswers => {
 
         // errors.map(e => console.log(e));
         // expect(errors.map(error => error.text())).toEqual([]);
-        expect(await page.$eval('h2', el => el.innerText === 'Hello World!'));
+        expect(await page.evaluate(() => document.body.innerHTML));// eslint-disable-line
       });
     });
   });
