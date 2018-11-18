@@ -6,7 +6,7 @@ sidebar_label: Stylelint Setup
 
 ## Introduction
 
-Yoshi defines [`stylelint-config-yoshi`](https://github.com/wix/yoshi/tree/master/packages/stylelint-config-yoshi), which is a custom [Stylelint configuration](https://jestjs.io/docs/en/configuration#preset-string) to enable zero-configuration stylesheet linting for any application. It follows the following mindset:
+Yoshi defines [`stylelint-config-yoshi`](https://github.com/wix/yoshi/tree/master/packages/stylelint-config-yoshi), which is a custom [Stylelint configuration](https://stylelint.io/user-guide/configuration/) to enable zero-configuration stylesheet linting for any application. It follows the following mindset:
 
 - Focus on possible errors rather than stylistic opinions
 - Auto-fixable code-style with prettier (`yoshi lint --fix`)
