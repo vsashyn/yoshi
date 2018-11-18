@@ -18,7 +18,7 @@ const {
 // verbose logs and output
 const verbose = process.env.VERBOSE_TESTS;
 // A regex pattern to run a focus test on the matched projects types
-const focusProjectPattern = process.env.FOCUS_PATTERN;
+const focusProjectPattern = 'fullstack'; //process.env.FOCUS_PATTERN;
 
 verbose && console.log(`using ${chalk.yellow('VERBOSE')} mode`);
 
