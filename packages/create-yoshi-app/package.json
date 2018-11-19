@@ -34,11 +34,8 @@
     "commander": "^2.16.0",
     "constant-case": "^2.0.0",
     "execa": "^0.10.0",
-    "expect": "^23.6.0",
     "fs-extra": "^7.0.0",
     "globby": "^8.0.1",
-    "minimist": "^1.2.0",
-    "mocha": "^5.2.0",
     "parse-git-config": "^2.0.2",
     "prompts": "^1.1.1",
     "semver": "^5.5.1",
@@ -47,8 +44,11 @@
   "devDependencies": {
     "chokidar": "^2.0.4",
     "clipboardy": "^1.2.3",
+    "expect": "^23.6.0",
     "find-cache-dir": "^2.0.0",
     "jest": "^23.3.0",
+    "minimist": "^1.2.0",
+    "mocha": "^5.2.0",
     "mocha-env-reporter": "^3.0.0",
     "tempy": "^0.2.1"
   }
