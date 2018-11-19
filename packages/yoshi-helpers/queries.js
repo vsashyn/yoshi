@@ -5,7 +5,7 @@ const cosmiconfig = require('cosmiconfig');
 const project = require('yoshi-config');
 const globs = require('yoshi-config/globs');
 const { tryRequire } = require('./utils');
-const { POM_FILE } = require('yoshi-config/paths');
+const { POM_FILE, DOCKERFILE } = require('yoshi-config/paths');
 
 const readDir = patterns =>
   []
@@ -96,4 +96,11 @@ module.exports.shouldDeployToCDN = () => {
     process.env.ARTIFACT_VERSION &&
     fs.existsSync(POM_FILE)
   );
+};
+
+module.exports.doesProjectRenderEJS = () => {
+  // The current heuristic to know of the project should render ejs is
+  // if the project has it's own server (which means a node server) and
+  // we know that if the project has a Dockerfile
+  return fs.existsSync(DOCKERFILE);
 };

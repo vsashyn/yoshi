@@ -435,6 +435,51 @@ describe('Webpack basic configs', () => {
         `<link href="\${clientTopology.staticsBaseUrl}app#if(!\${debug}).min#{end}.css" rel="stylesheet">`,
       );
     });
+
+    it('should create an index.vm for a client project without a index.vm', () => {
+      test = tp.create();
+      test.setup({
+        'package.json': fx.packageJson(),
+        'src/client.js': `
+          import './check.css';
+          document.getElementById('change-me').innerHTML = 'Changed!'
+        `,
+        'src/check.css': `#change-me { color: red }`,
+      });
+
+      test.execute('build');
+
+      expect(test.content('dist/statics/index.vm')).to.contain(
+        `<script src="\${clientTopology.staticsBaseUrl}app.bundle#if(!\${debug}).min#{end}.js"></script>`,
+      );
+
+      expect(test.content('dist/statics/index.vm')).to.contain(
+        `<link href="\${clientTopology.staticsBaseUrl}app#if(!\${debug}).min#{end}.css" rel="stylesheet">`,
+      );
+    });
+
+    it('should create an index.ejs for a fullstack project without a index.ejs', () => {
+      test = tp.create();
+      test.setup({
+        'package.json': fx.packageJson(),
+        'src/client.js': `
+          import './check.css';
+          document.getElementById('change-me').innerHTML = 'Changed!'
+        `,
+        'src/check.css': `#change-me { color: red }`,
+        Dockerfile: '',
+      });
+
+      test.execute('build');
+
+      expect(test.content('dist/statics/index.ejs')).to.contain(
+        `<script src="<%= baseStaticsUrl %>app.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+      );
+
+      expect(test.content('dist/statics/index.ejs')).to.contain(
+        `<link href="<%= baseStaticsUrl %>app<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+      );
+    });
   });
 });
 

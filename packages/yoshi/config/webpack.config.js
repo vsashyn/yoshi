@@ -35,6 +35,7 @@ const {
   isProduction: checkIsProduction,
   inTeamCity: checkInTeamCity,
   isTypescriptProject: checkIsTypescriptProject,
+  doesProjectRenderEJS,
 } = require('yoshi-helpers');
 const { htmlTemplates } = require('yoshi-config/globs');
 
@@ -606,14 +607,7 @@ function createClientWebpackConfig({
       ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
 
       // https://github.com/jantimon/html-webpack-plugin
-      ...globby.sync(htmlTemplates, { cwd: config.context }).map(
-        templatePath =>
-          new HtmlWebpackPlugin({
-            filename: path.basename(templatePath),
-            template: templatePath,
-            minify: false,
-          }),
-      ),
+      ...getHtmlTemplatesPlugins(config.context),
 
       new class HtmlAssetsPlugin {
         apply(compiler) {
@@ -808,6 +802,36 @@ function createServerWebpackConfig({ isDebug = true } = {}) {
   };
 
   return serverConfig;
+}
+
+function getHtmlTemplatesPlugins(cwd) {
+  const existingTemplates = globby.sync(htmlTemplates, { cwd });
+  if (existingTemplates.length > 0) {
+    return existingTemplates.map(
+      templatePath =>
+        new HtmlWebpackPlugin({
+          filename: path.basename(templatePath),
+          template: templatePath,
+          minify: false,
+        }),
+    );
+  } else {
+    if (doesProjectRenderEJS()) {
+      return [
+        new HtmlWebpackPlugin({
+          filename: 'index.ejs',
+          minify: false,
+        }),
+      ];
+    } else {
+      return [
+        new HtmlWebpackPlugin({
+          filename: 'index.vm',
+          minify: false,
+        }),
+      ];
+    }
+  }
 }
 
 module.exports = {

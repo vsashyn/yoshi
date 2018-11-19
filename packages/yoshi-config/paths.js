@@ -14,6 +14,7 @@ const ASSETS_DIR = path.join(STATICS_DIR, 'assets');
 const POM_FILE = resolvePath('pom.xml');
 const STATS_FILE = resolvePath(TARGET_DIR, 'webpack-stats.json');
 const TSCONFIG_FILE = resolvePath('tsconfig.json');
+const DOCKERFILE = resolvePath('Dockerfile');
 
 module.exports = {
   ROOT_DIR,
@@ -26,4 +27,5 @@ module.exports = {
   POM_FILE,
   STATS_FILE,
   TSCONFIG_FILE,
+  DOCKERFILE,
 };
