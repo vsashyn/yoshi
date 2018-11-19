@@ -2,8 +2,8 @@
 
 This is a custom [Stylelint configuration](https://jestjs.io/docs/en/configuration#preset-string) which follows the following mindset:
 
-- Focus on possible errors rather than stylistic opinions
-- Auto-fixable code-style with prettier (`yoshi lint --fix`)
+- Only fail on errors that can cause production bugs rather than stylistic opinions
+- If it's not a critical bug, we try only to add auto-fixable rules (`yoshi lint --fix`)
 
 ## Enabled stylelint rules:
 
