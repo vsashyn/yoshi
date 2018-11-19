@@ -248,9 +248,9 @@ Default: empty
 
 Executes linters based on the project type:
 
-- `TSLint` for TypeScript projects (a `tslint.json` configuration file is required)
-- `ESLint` for Babel projects (an `.eslintrc` configuration file is required)
-- `Stylelint` for any project with a `stylelint` configuration
+- [`TSLint`](https://palantir.github.io/tslint/) for TypeScript projects (a `tslint.json` configuration file is required)
+- [`ESLint`](https://eslint.org/) for Babel projects (an `.eslintrc` configuration file is required)
+- [`Stylelint`](https://stylelint.io/) for any project with a `stylelint` configuration
 
 ## `release`
 
