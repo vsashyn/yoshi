@@ -38,8 +38,7 @@ const noOptions =
   !cliArgs.protractor;
 
 if (noOptions) {
-  cliArgs.mocha = true;
-  cliArgs.protractor = true;
+  cliArgs.jest = true;
 }
 
 const debugPort = cliArgs.debug;
