@@ -24,6 +24,7 @@
     "ajv-keywords": "^3.2.0",
     "autoprefixer": "~7.1.2",
     "babel-eslint": "^8.2.3",
+    "babel-jest": "^23.2.0",
     "babel-loader": "~7.1.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-yoshi": "3.17.0",

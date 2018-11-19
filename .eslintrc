@@ -1,22 +1,28 @@
 {
   "extends": "./packages/eslint-config-yoshi/index.js",
+  "rules": {
+    "import/no-extraneous-dependencies": "error"
+  },
   "overrides": [
     {
       "files": ["test/kitchensink/**/*"],
       "rules": {
-        "import/no-unresolved": 0
+        "import/no-unresolved": 0,
+        "import/no-extraneous-dependencies": 0
       }
     },
     {
       "files": ["website/**/*"],
       "rules": {
-        "import/no-unresolved": 0
+        "import/no-unresolved": 0,
+        "import/no-extraneous-dependencies": 0
       }
     },
     {
       "files": ["packages/create-yoshi-app/templates/**/*"],
       "rules": {
-        "import/no-unresolved": 0
+        "import/no-unresolved": 0,
+        "import/no-extraneous-dependencies": 0
       },
       "globals": {
         "app": false
