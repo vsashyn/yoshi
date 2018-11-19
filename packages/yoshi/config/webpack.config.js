@@ -805,31 +805,43 @@ function createServerWebpackConfig({ isDebug = true } = {}) {
 }
 
 function getHtmlTemplatesPlugins(cwd) {
-  const existingTemplates = globby.sync(htmlTemplates, { cwd });
-  if (existingTemplates.length > 0) {
-    return existingTemplates.map(
+  if (project.htmlTemplates) {
+    return Object.keys(project.htmlTemplates).map(
       templatePath =>
         new HtmlWebpackPlugin({
           filename: path.basename(templatePath),
           template: templatePath,
           minify: false,
+          chunks: [project.htmlTemplates[templatePath]],
         }),
     );
   } else {
-    if (doesProjectRenderEJS()) {
-      return [
-        new HtmlWebpackPlugin({
-          filename: 'index.ejs',
-          minify: false,
-        }),
-      ];
+    const existingTemplates = globby.sync(htmlTemplates, { cwd });
+    if (existingTemplates.length > 0) {
+      return existingTemplates.map(
+        templatePath =>
+          new HtmlWebpackPlugin({
+            filename: path.basename(templatePath),
+            template: templatePath,
+            minify: false,
+          }),
+      );
     } else {
-      return [
-        new HtmlWebpackPlugin({
-          filename: 'index.vm',
-          minify: false,
-        }),
-      ];
+      if (doesProjectRenderEJS()) {
+        return [
+          new HtmlWebpackPlugin({
+            filename: 'index.ejs',
+            minify: false,
+          }),
+        ];
+      } else {
+        return [
+          new HtmlWebpackPlugin({
+            filename: 'index.vm',
+            minify: false,
+          }),
+        ];
+      }
     }
   }
 }

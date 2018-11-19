@@ -65,6 +65,7 @@ const loadConfig = () => {
       },
     },
     entry: getConfig('entry'),
+    htmlTemplates: getConfig('htmlTemplates'),
     splitChunks: getConfig('splitChunks', false),
     defaultEntry: './client',
     separateCss: getConfig('separateCss', true),

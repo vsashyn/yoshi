@@ -482,6 +482,10 @@
     "experimentalServerBundle": {
       "description": "An experimental way of running an app by creating a bundle specifically for the server.",
       "type": "boolean"
+    },
+    "htmlTemplates": {
+      "description": "Define which chunks should go into which html templates",
+      "type": "object"
     }
   }
 }

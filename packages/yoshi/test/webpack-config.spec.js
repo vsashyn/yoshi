@@ -368,118 +368,197 @@ describe('Webpack basic configs', () => {
       test.teardown();
     });
   });
+});
 
-  describe('html templates', () => {
-    it('should inject assets into an index.ejs template', () => {
-      test = tp.create();
-      test.setup({
-        'package.json': fx.packageJson(),
-        'pom.xml': fx.pom(),
-        'src/index.ejs': `
-          <html>
-            <head>
-              <title>Test Title</title>
-            </head>
-            <body>
-              <p id="change-me">Test Body</p>
-            </body>
-          </html>
-        `,
-        'src/client.js': `
-          import './check.css';
-          document.getElementById('change-me').innerHTML = 'Changed!'
-        `,
-        'src/check.css': `#change-me { color: red }`,
-      });
+describe('Webpack html templates', () => {
+  let test;
 
-      test.execute('build');
+  afterEach(() => test.teardown());
 
-      expect(test.content('dist/statics/index.ejs')).to.contain(
-        `<script src="<%= baseStaticsUrl %>app.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
-      );
-
-      expect(test.content('dist/statics/index.ejs')).to.contain(
-        `<link href="<%= baseStaticsUrl %>app<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
-      );
+  it('should inject assets into an index.ejs template', () => {
+    test = tp.create();
+    test.setup({
+      'package.json': fx.packageJson(),
+      'pom.xml': fx.pom(),
+      'src/index.ejs': `
+        <html>
+          <head>
+            <title>Test Title</title>
+          </head>
+          <body>
+            <p id="change-me">Test Body</p>
+          </body>
+        </html>
+      `,
+      'src/client.js': `
+        import './check.css';
+        document.getElementById('change-me').innerHTML = 'Changed!'
+      `,
+      'src/check.css': `#change-me { color: red }`,
     });
 
-    it('should inject assets into a index.vm template', () => {
-      test = tp.create();
-      test.setup({
-        'package.json': fx.packageJson(),
-        'pom.xml': fx.pom(),
-        'src/index.vm': `
-          <html>
-            <head>
-              <title>Test Title</title>
-            </head>
-            <body>
-              <p id="change-me">Test Body</p>
-            </body>
-          </html>
-        `,
-        'src/client.js': `
-          import './check.css';
-          document.getElementById('change-me').innerHTML = 'Changed!'
-        `,
-        'src/check.css': `#change-me { color: red }`,
-      });
+    test.execute('build');
 
-      test.execute('build');
+    expect(test.content('dist/statics/index.ejs')).to.contain(
+      `<script src="<%= baseStaticsUrl %>app.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+    );
 
-      expect(test.content('dist/statics/index.vm')).to.contain(
-        `<script src="\${clientTopology.staticsBaseUrl}app.bundle#if(!\${debug}).min#{end}.js"></script>`,
-      );
+    expect(test.content('dist/statics/index.ejs')).to.contain(
+      `<link href="<%= baseStaticsUrl %>app<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+    );
+  });
 
-      expect(test.content('dist/statics/index.vm')).to.contain(
-        `<link href="\${clientTopology.staticsBaseUrl}app#if(!\${debug}).min#{end}.css" rel="stylesheet">`,
-      );
+  it('should inject assets into a index.vm template', () => {
+    test = tp.create();
+    test.setup({
+      'package.json': fx.packageJson(),
+      'pom.xml': fx.pom(),
+      'src/index.vm': `
+        <html>
+          <head>
+            <title>Test Title</title>
+          </head>
+          <body>
+            <p id="change-me">Test Body</p>
+          </body>
+        </html>
+      `,
+      'src/client.js': `
+        import './check.css';
+        document.getElementById('change-me').innerHTML = 'Changed!'
+      `,
+      'src/check.css': `#change-me { color: red }`,
     });
 
-    it('should create an index.vm for a client project without a index.vm', () => {
-      test = tp.create();
-      test.setup({
-        'package.json': fx.packageJson(),
-        'src/client.js': `
-          import './check.css';
-          document.getElementById('change-me').innerHTML = 'Changed!'
-        `,
-        'src/check.css': `#change-me { color: red }`,
-      });
+    test.execute('build');
 
-      test.execute('build');
+    expect(test.content('dist/statics/index.vm')).to.contain(
+      `<script src="\${clientTopology.staticsBaseUrl}app.bundle#if(!\${debug}).min#{end}.js"></script>`,
+    );
 
-      expect(test.content('dist/statics/index.vm')).to.contain(
-        `<script src="\${clientTopology.staticsBaseUrl}app.bundle#if(!\${debug}).min#{end}.js"></script>`,
-      );
+    expect(test.content('dist/statics/index.vm')).to.contain(
+      `<link href="\${clientTopology.staticsBaseUrl}app#if(!\${debug}).min#{end}.css" rel="stylesheet">`,
+    );
+  });
 
-      expect(test.content('dist/statics/index.vm')).to.contain(
-        `<link href="\${clientTopology.staticsBaseUrl}app#if(!\${debug}).min#{end}.css" rel="stylesheet">`,
-      );
+  it('should create an index.vm for a client project without a index.vm', () => {
+    test = tp.create();
+    test.setup({
+      'package.json': fx.packageJson(),
+      'src/client.js': `
+        import './check.css';
+        document.getElementById('change-me').innerHTML = 'Changed!'
+      `,
+      'src/check.css': `#change-me { color: red }`,
     });
 
-    it('should create an index.ejs for a fullstack project without a index.ejs', () => {
-      test = tp.create();
-      test.setup({
-        'package.json': fx.packageJson(),
-        'src/client.js': `
-          import './check.css';
-          document.getElementById('change-me').innerHTML = 'Changed!'
-        `,
-        'src/check.css': `#change-me { color: red }`,
-        Dockerfile: '',
-      });
+    test.execute('build');
 
-      test.execute('build');
+    expect(test.content('dist/statics/index.vm')).to.contain(
+      `<script src="\${clientTopology.staticsBaseUrl}app.bundle#if(!\${debug}).min#{end}.js"></script>`,
+    );
 
-      expect(test.content('dist/statics/index.ejs')).to.contain(
-        `<script src="<%= baseStaticsUrl %>app.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
-      );
+    expect(test.content('dist/statics/index.vm')).to.contain(
+      `<link href="\${clientTopology.staticsBaseUrl}app#if(!\${debug}).min#{end}.css" rel="stylesheet">`,
+    );
+  });
 
-      expect(test.content('dist/statics/index.ejs')).to.contain(
-        `<link href="<%= baseStaticsUrl %>app<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
-      );
+  it('should create an index.ejs for a fullstack project without a index.ejs', () => {
+    test = tp.create();
+    test.setup({
+      'package.json': fx.packageJson(),
+      'src/client.js': `
+        import './check.css';
+        document.getElementById('change-me').innerHTML = 'Changed!'
+      `,
+      'src/check.css': `#change-me { color: red }`,
+      Dockerfile: '',
     });
+
+    test.execute('build');
+
+    expect(test.content('dist/statics/index.ejs')).to.contain(
+      `<script src="<%= baseStaticsUrl %>app.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+    );
+
+    expect(test.content('dist/statics/index.ejs')).to.contain(
+      `<link href="<%= baseStaticsUrl %>app<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+    );
+  });
+
+  it('should inject correct chunks into templates when given a templates config', () => {
+    test = tp.create();
+    test.setup({
+      'package.json': fx.packageJson({
+        entry: {
+          first: 'first.js',
+          second: 'second.js',
+        },
+        htmlTemplates: {
+          'first.ejs': 'first',
+          'second.ejs': 'second',
+        },
+      }),
+      'src/first.ejs': `
+        <html>
+          <head>
+            <title>Test Title</title>
+          </head>
+          <body>
+            <p id="change-me">Test Body</p>
+          </body>
+        </html>
+      `,
+      'src/first.js': `
+        import './first.css';
+        document.getElementById('change-me').innerHTML = 'First Changed!'
+      `,
+      'src/first.css': `#change-me { color: red }`,
+      'src/second.ejs': `
+        <html>
+          <head>
+            <title>Test Title</title>
+          </head>
+          <body>
+            <p id="change-me">Test Body</p>
+          </body>
+        </html>
+      `,
+      'src/second.js': `
+        import './second.css';
+        document.getElementById('change-me').innerHTML = 'Second Changed!'
+      `,
+      'src/second.css': `#change-me { color: red }`,
+      Dockerfile: '',
+    });
+
+    test.execute('build');
+
+    expect(test.content('dist/statics/first.ejs')).to.contain(
+      `<script src="<%= baseStaticsUrl %>first.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+    );
+    expect(test.content('dist/statics/first.ejs')).to.contain(
+      `<link href="<%= baseStaticsUrl %>first<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+    );
+    expect(test.content('dist/statics/first.ejs')).to.not.contain(
+      `<script src="<%= baseStaticsUrl %>second.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+    );
+    expect(test.content('dist/statics/first.ejs')).to.not.contain(
+      `<link href="<%= baseStaticsUrl %>second<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+    );
+
+    expect(test.content('dist/statics/second.ejs')).to.contain(
+      `<script src="<%= baseStaticsUrl %>second.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+    );
+    expect(test.content('dist/statics/second.ejs')).to.contain(
+      `<link href="<%= baseStaticsUrl %>second<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+    );
+    expect(test.content('dist/statics/second.ejs')).to.not.contain(
+      `<script src="<%= baseStaticsUrl %>first.bundle<% if (!debug) { %>.min<% } %>.js"></script>`,
+    );
+    expect(test.content('dist/statics/second.ejs')).to.not.contain(
+      `<link href="<%= baseStaticsUrl %>first<% if (!debug) { %>.min<% } %>.css" rel="stylesheet">`,
+    );
   });
 });
 
