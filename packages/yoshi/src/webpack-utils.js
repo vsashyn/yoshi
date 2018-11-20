@@ -6,9 +6,11 @@ const clearConsole = require('react-dev-utils/clearConsole');
 const { prepareUrls } = require('react-dev-utils/WebpackDevServerUtils');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const project = require('yoshi-config');
-const { STATICS_DIR } = require('yoshi-config/paths');
+const { STATICS_DIR, PUBLIC_DIR } = require('yoshi-config/paths');
 const { PORT } = require('./constants');
 const { redirectMiddleware } = require('../src/tasks/cdn/server-api');
+const express = require('express');
+const serveIndex = require('serve-index');
 
 const isInteractive = process.stdout.isTTY;
 
@@ -120,11 +122,15 @@ function createCompiler(config, { https }) {
 }
 
 function createDevServerConfig({ publicPath, https }) {
+  console.log('>>> PATHS', [STATICS_DIR, PUBLIC_DIR]);
   return {
     // Enable gzip compression for everything served
     compress: true,
     clientLogLevel: 'error',
-    contentBase: STATICS_DIR,
+    // Directories we provide here, WDS will watch if `watchContentBase` and
+    // send content-change event on it's HMR infra.
+    // note that PUBLIC_DIR will be served from / (not what we want, but we handle it later)
+    contentBase: [STATICS_DIR, PUBLIC_DIR],
     watchContentBase: true,
     hot: true,
     publicPath,
@@ -140,7 +146,33 @@ function createDevServerConfig({ publicPath, https }) {
 
       // Redirect `.min.(js|css)` to `.(js|css)`
       app.use(redirectMiddleware('0.0.0.0', project.servers.cdn.port));
-    },
+
+      // We have a "virtual" path /assets that should be served from
+      // PUBLIC_DIR = SRC_DIR + "/assets", however, WDS don't have an option
+      // to create such a virtual route, so we need to do it ourselves:
+      app.use('/assets', express.static(PUBLIC_DIR));
+      app.use('/assets', serveIndex(PUBLIC_DIR));
+
+      app.get('*', (req, res, next) => {
+        const originalEnd = res.end;
+
+        // we patch only root dir index to add /assets
+        if (req.originalUrl !== '/') {
+          return next();
+        }
+
+        res.end = function(data, encoding) {
+          const dirName = 'assets';
+          const marker = '<ul id="files" class="view-tiles">';
+          data = data.replace(
+            marker,
+            `${marker}><li><a href="/${dirName}" class="" title="${dirName}"><span class="name">${dirName}</span><span class="size"></span><span class="date">${new Date().toLocaleDateString()}</span></a></li>`,
+          );
+          return originalEnd.apply(this, [data, encoding]);
+        };
+        next();
+      });
+    }
   };
 }
 
@@ -187,8 +219,9 @@ async function waitForServerToStart({ server }) {
 
 function waitForCompilation(compiler) {
   return new Promise((resolve, reject) => {
-    compiler.hooks.done.tap('promise', stats =>
-      stats.hasErrors() ? reject(stats) : resolve(stats),
+    compiler.hooks.done.tap(
+      'promise',
+      stats => (stats.hasErrors() ? reject(stats) : resolve(stats)),
     );
   });
 }
