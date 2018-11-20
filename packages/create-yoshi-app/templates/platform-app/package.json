@@ -1,0 +1,70 @@
+{
+  "name": "{%projectName%}",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "author": {
+    "name": "{%authorName%}",
+    "email": "{%authorEmail%}"
+  },
+  "scripts": {
+    "start": "yoshi start",
+    "precommit": "lint-staged",
+    "pretest": "yoshi build",
+    "test": "yoshi test --jest",
+    "posttest": "yoshi lint",
+    "release": "yoshi release"
+  },
+  "devDependencies": {
+    "enzyme": "~2.9.0",
+    "express": "~4.15.0",
+    "express-session": "~1.15.0",
+    "husky": "~0.14.0",
+    "lint-staged": "^7.2.2",
+    "jest-yoshi-preset": "^3.5.0",
+    "puppeteer": "^1.1.0",
+    "react-test-renderer": "~15.6.0",
+    "velocity": "~0.7.0",
+    "yoshi": "^3.0.0",
+    "yoshi-style-dependencies": "^3.0.0"
+  },
+  "dependencies": {
+    "axios": "~0.16.0",
+    "i18next": "^11.6.0",
+    "prop-types": "~15.6.0",
+    "react": "15.6.1",
+    "react-dom": "15.6.1",
+    "react-i18next": "^7.11.0",
+    "wix-axios-config": "latest",
+    "native-components-infra": "^1.0.0"
+  },
+  "lint-staged": {
+    "*.{js,scss,less}": "yoshi lint"
+  },
+  "yoshi": {
+    "externals": {
+      "react": "React",
+      "react-dom": "ReactDOM"
+    },
+    "hmr": "auto",
+    "entry": {
+      "client": "./src/client";
+      "app": "./src/components/App",
+      "viewer": "./src/platform/viewerScript",
+      "editor": "./src/platform/editorScript"
+    }
+  },
+  "jest": {
+    "preset": "jest-yoshi-preset"
+  },
+  "babel": {
+    "presets": [
+      "yoshi"
+    ],
+    "exports": "{%projectName%}",
+    "umdNamedDefine": false
+  },
+  "eslintConfig": {
+    "extends": "yoshi"
+  }
+}

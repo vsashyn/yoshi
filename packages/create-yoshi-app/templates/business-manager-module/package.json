@@ -1,0 +1,71 @@
+{
+  "name": "{%projectName%}",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "private": true,
+  "author": {
+    "name": "{%authorName%}",
+    "email": "{%authorEmail%}"
+  },
+  "scripts": {
+    "start": "yoshi start --entry-point ./dist/test/dev/server.js",
+    "precommit": "lint-staged",
+    "pretest": "yoshi build",
+    "test": "yoshi test",
+    "posttest": "yoshi lint",
+    "release": "yoshi release"
+  },
+  "devDependencies": {
+    "@wix/business-manager": "latest",
+    "@wix/business-manager-api": "latest",
+    "chai": "~4.1.0",
+    "enzyme": "~2.9.0",
+    "husky": "~0.14.0",
+    "jsdom": "~11.2.0",
+    "jsdom-global": "~3.0.0",
+    "lint-staged": "^7.2.2",
+    "prop-types": "~15.5.0",
+    "protractor": "^5.3.2",
+    "react": "15.5.4",
+    "react-dom": "15.5.4",
+    "react-module-container": "~1.0.0",
+    "react-test-renderer": "15.5.4",
+    "yoshi": "^3.0.0",
+    "yoshi-style-dependencies": "^3.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "fedops-logger": "^3.0.5",
+    "i18next": "~8.4.0",
+    "i18next-xhr-backend": "~1.4.0",
+    "react-i18next": "~4.8.0",
+    "wix-axios-config": "latest",
+    "regenerator-runtime": "^0.11.0"
+  },
+  "lint-staged": {
+    "*.{js,scss,less}": "yoshi lint"
+  },
+  "yoshi": {
+    "entry": {
+      "{%projectName%}-module": "./module",
+      "{%projectName%}-app": "./client"
+    },
+    "externals": {
+      "react": "React",
+      "react-dom": "ReactDOM",
+      "react-addons-css-transition-group": "React.addons.CSSTransitionGroup",
+      "lodash": "_",
+      "urijs": "URI",
+      "@wix/business-manager-api": "BusinessManagerAPI",
+      "react-module-container": "reactModuleContainer"
+    }
+  },
+  "babel": {
+    "presets": [
+      "yoshi"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "yoshi"
+  }
+}
