@@ -90,50 +90,6 @@ describe('Aggregator: Test', () => {
     });
   });
 
-  describe('defaults', () => {
-    let test;
-    beforeEach(() => (test = tp.create()));
-    afterEach(() => test.teardown());
-
-    it('should pass with exit code 0 with mocha as default', function() {
-      this.timeout(40000);
-      const res = test
-        .setup({
-          'test/component.spec.js': 'it.only("pass", () => 1);',
-          'protractor.conf.js': `
-            const http = require("http");
-
-            exports.config = {
-              framework: "jasmine",
-              specs: ["dist/test/**/*.e2e.js"],
-              onPrepare: () => {
-                const server = http.createServer((req, res) => {
-                  const response = "<html><body><script src=http://localhost:3200/app.bundle.js></script></body></html>";
-                  res.end(response);
-                });
-
-                return server.listen(1337);
-              }
-            };
-          `,
-          'dist/test/some.e2e.js': `
-            it("should write to body", () => {
-              browser.ignoreSynchronization = true;
-              browser.get("http://localhost:1337");
-              expect(element(by.css("body")).getText()).toEqual("");
-            });
-          `,
-          'package.json': fx.packageJson(),
-        })
-        .execute('test', undefined, outsideTeamCity);
-
-      expect(res.code).to.equal(0);
-      expect(res.stdout).to.contain('1 passing');
-      expect(res.stdout).to.contains('protractor');
-      expect(res.stdout).to.contain('1 spec, 0 failures');
-    });
-  });
-
   describe('--protractor', () => {
     let test;
     beforeEach(() => (test = tp.create()));
@@ -269,7 +225,7 @@ describe('Aggregator: Test', () => {
     }).timeout(30000);
   });
 
-  describe('--jest', () => {
+  describe('default (--jest)', () => {
     describe('when passes', () => {
       const testSetup = {
         '__tests__/foo.js': `
@@ -344,7 +300,7 @@ describe('Aggregator: Test', () => {
       let test, res;
       before(() => {
         test = tp.create();
-        res = test.setup(testSetup).execute('test', ['--jest'], insideTeamCity);
+        res = test.setup(testSetup).execute('test', [], insideTeamCity);
       });
 
       after(() => test.teardown());
@@ -405,14 +361,14 @@ describe('Aggregator: Test', () => {
             };`,
           'package.json': fx.packageJson(),
         })
-        .execute('test', ['--jest']);
+        .execute('test', []);
 
       expect(res.code).to.equal(1);
       expect(res.stderr).to.contain('1 failed');
       test.teardown();
     });
 
-    it('should forward command-line arguments after/before "--jest" to jest bin', () => {
+    it('should forward command-line arguments after/before to jest bin', () => {
       const test = tp.create();
       const res = test
         .setup({
@@ -422,7 +378,6 @@ describe('Aggregator: Test', () => {
         })
         .execute('test', [
           '--listTests',
-          '--jest',
           '__tests__/foo.js',
           '__tests__/bar.js',
         ]);
@@ -449,7 +404,7 @@ describe('Aggregator: Test', () => {
             }
           }`,
         })
-        .execute('test', ['--jest', '--coverage']);
+        .execute('test', ['--coverage']);
 
       expect(res.code).to.equal(0);
       expect(res.stdout).to.contain(
@@ -505,7 +460,7 @@ describe('Aggregator: Test', () => {
               });
             `,
           })
-          .execute('test', ['--jest']);
+          .execute('test', []);
 
         expect(res.code).to.equal(0);
       });
@@ -580,7 +535,7 @@ describe('Aggregator: Test', () => {
           staticsDomain,
         );
 
-        const testResponse = project.execute('test', ['--jest'], {
+        const testResponse = project.execute('test', [], {
           ...insideTeamCity,
           ...teamCityArtifactVersion,
         });
