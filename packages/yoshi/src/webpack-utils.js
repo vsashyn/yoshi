@@ -166,7 +166,7 @@ function createDevServerConfig({ publicPath, https }) {
           const marker = '<ul id="files" class="view-tiles">';
           data = data.replace(
             marker,
-            `${marker}><li><a href="/${dirName}" class="" title="${dirName}"><span class="name">${dirName}</span><span class="size"></span><span class="date">${new Date().toLocaleDateString()}</span></a></li>`,
+            `${marker}<li><a href="/${dirName}" class="" title="${dirName}"><span class="name">${dirName}</span><span class="size"></span><span class="date">${new Date().toLocaleDateString()}</span></a></li>`,
           );
           return originalEnd.apply(this, [data, encoding]);
         };
