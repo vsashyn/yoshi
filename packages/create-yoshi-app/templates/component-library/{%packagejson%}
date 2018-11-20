@@ -37,9 +37,9 @@
     "react": "15.6.1",
     "react-dom": "15.6.1",
     "react-test-renderer": "~15.6.0",
-    "teamcity-surge-autorelease": "^1.0.3",
     "yoshi": "^3.0.0",
-    "yoshi-style-dependencies": "^3.0.0"
+    "yoshi-style-dependencies": "^3.0.0",
+    "@wix/teamcity-surge-autorelease": "^1.0.3"
   },
   "lint-staged": {
     "*.{js,scss,less}": "yoshi lint"
