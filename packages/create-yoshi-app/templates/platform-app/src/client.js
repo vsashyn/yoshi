@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import App from './components/App';
 import i18n from './i18n';
-import { ViewerScriptWrapper } from 'native-components-infra';
+import { ViewerScriptWrapper } from '@wix/native-components-infra';
 import viewerScript from './platform/viewerScript';
 
 const locale = window.__LOCALE__;
