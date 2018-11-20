@@ -104,7 +104,7 @@ module.exports = async () => {
       global.SERVER = child_process.spawn(jestYoshiConfig.server.command, {
         shell: true,
         stdio: 'pipe',
-        detach: true,
+        detached: true,
         env: {
           ...process.env,
           PORT: jestYoshiConfig.server.port,

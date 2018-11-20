@@ -488,8 +488,8 @@ describe('Aggregator: Test', () => {
       test.teardown();
     });
 
-    describe.only('puppeteer environment', () => {
-      it('should pass with passing e2e tests', () => {
+    describe('puppeteer environment', () => {
+      it.only('should pass with passing e2e tests', () => {
         const cdnPort = 3200;
         const serverPort = 3100;
         const e2eTestSampleText = 'Hello World!';
@@ -536,7 +536,6 @@ describe('Aggregator: Test', () => {
             `,
           })
           .execute('test', ['--jest']);
-
         expect(res.code).to.equal(0);
       });
 
