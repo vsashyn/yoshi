@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
-import wixExpressCsrf from 'wix-express-csrf';
-import wixExpressRequireHttps from 'wix-express-require-https';
+import wixExpressCsrf from '@wix/wix-express-csrf';
+import wixExpressRequireHttps from '@wix/wix-express-require-https';
 
 module.exports = app => {
   app.use(wixExpressCsrf());
