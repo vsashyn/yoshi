@@ -427,7 +427,7 @@ function createCommonWebpackConfig({
               test: reAssets,
               loader: 'url-loader',
               options: {
-                name: 'assets/[name].[ext]?[hash]',
+                name: 'media/[name].[ext]?[hash]',
                 limit: 10000,
               },
             },
@@ -480,8 +480,8 @@ function createCommonWebpackConfig({
       inTeamCity || withLocalSourceMaps
         ? 'source-map'
         : !isProduction
-        ? 'cheap-module-eval-source-map'
-        : false,
+          ? 'cheap-module-eval-source-map'
+          : false,
   };
 
   return config;

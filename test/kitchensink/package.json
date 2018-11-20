@@ -63,10 +63,5 @@
       "react-dom": "ReactDOM"
     },
     "hmr": "auto"
-  },
-  "babel": {
-    "presets": [
-      "yoshi"
-    ]
   }
 }
