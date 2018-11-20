@@ -1,5 +1,5 @@
 {
-  "name": "{%projectName%}",
+  "name": "@wix/{%projectName%}",
   "version": "1.0.0",
   "license": "UNLICENSED",
   "private": true,
@@ -35,7 +35,7 @@
     "react": "15.6.1",
     "react-dom": "15.6.1",
     "react-i18next": "^7.11.0",
-    "wix-axios-config": "latest"
+    "@wix/wix-axios-config": "latest"
   },
   "lint-staged": {
     "*.{js,scss,less}": "yoshi lint"
