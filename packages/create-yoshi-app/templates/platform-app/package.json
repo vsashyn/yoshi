@@ -48,7 +48,7 @@
     },
     "hmr": "auto",
     "entry": {
-      "client": "./src/client";
+      "client": "./src/client",
       "app": "./src/components/App",
       "viewer": "./src/platform/viewerScript",
       "editor": "./src/platform/editorScript"
