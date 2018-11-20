@@ -1,4 +1,4 @@
-declare module 'wix-run-mode';
-declare module 'wix-express-csrf';
-declare module 'wix-bootstrap-testkit';
-declare module 'wix-config-emitter';
+declare module '@wix/wix-run-mode';
+declare module '@wix/wix-express-csrf';
+declare module '@wix/wix-bootstrap-testkit';
+declare module '@wix/wix-config-emitter';

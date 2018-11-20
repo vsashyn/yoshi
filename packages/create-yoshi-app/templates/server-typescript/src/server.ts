@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as wixExpressCsrf from 'wix-express-csrf';
-import * as wixExpressRequireHttps from 'wix-express-require-https';
+import * as wixExpressCsrf from '@wix/wix-express-csrf';
+import * as wixExpressRequireHttps from '@wix/wix-express-require-https';
 
 module.exports = (app: Router) => {
   app.use(wixExpressCsrf());
