@@ -4,7 +4,7 @@ const stripAnsi = require('strip-ansi');
 const waitPort = require('wait-port');
 const terminate = require('terminate');
 
-async function waitForPort(port, { timeout = 10000 } = {}) {
+async function waitForPort(port, { timeout = 20000 } = {}) {
   const portFound = await waitPort({ port, timeout, output: 'silent' });
 
   if (!portFound) {
