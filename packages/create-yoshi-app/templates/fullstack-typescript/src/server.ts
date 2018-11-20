@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as wixExpressCsrf from 'wix-express-csrf';
-import * as wixExpressRequireHttps from 'wix-express-require-https';
+import * as wixExpressCsrf from '@wix/wix-express-csrf';
+import * as wixExpressRequireHttps from '@wix/wix-express-require-https';
 
 // This function is the main entry for our server. It accepts an express Router
 // (see http://expressjs.com) and attaches routes and middlewares to it.

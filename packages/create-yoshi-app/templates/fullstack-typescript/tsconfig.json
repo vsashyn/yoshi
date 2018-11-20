@@ -17,7 +17,7 @@
   ],
   "files": [
     "./node_modules/jest-yoshi-preset/types.d.ts",
-    "./node_modules/wix-bootstrap-renderer/declarations.d.ts",
+    "./node_modules/@wix/wix-bootstrap-renderer/declarations.d.ts",
     "./src/external-types.d.ts",
     "./src/test-types.d.ts",
     "./src/server.ts",
