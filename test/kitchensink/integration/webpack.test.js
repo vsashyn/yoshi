@@ -1,4 +1,4 @@
-const { matchCSS, matchJS, initTest, request } = require('../../utils');
+const { matchCSS, matchJS, initTest } = require('../../utils');
 
 describe('webpack', () => {
   describe('css', () => {
@@ -326,25 +326,6 @@ describe('webpack', () => {
 
       // should include the `de` locale
       await matchJS('exclude-moment', page, [/hallo/]);
-    });
-  });
-
-  describe('public folder', () => {
-    it('serves static assets', async () => {
-      const response = await request('http://localhost:3200/assets/hello.txt');
-      expect(response).toBe('Hello from public folder!');
-    });
-
-    it('shows the contents of static assets', async () => {
-      await page.goto('http://localhost:3200');
-
-      const list = await page.$$eval('#files li a', lis => {
-        return lis.map(li => li.textContent);
-      });
-
-      expect(list).toEqual(
-        expect.arrayContaining(['components/', 'app.bundle.js', 'assets/']),
-      );
     });
   });
 
