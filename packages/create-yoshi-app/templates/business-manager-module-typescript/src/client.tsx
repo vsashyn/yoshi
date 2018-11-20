@@ -3,8 +3,8 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { I18nextProvider } from 'react-i18next';
 import { ModuleRegistry } from 'react-module-container';
-import { create } from 'fedops-logger';
-import { wixAxiosConfig } from 'wix-axios-config';
+import { create } from '@wix/fedops-logger';
+import { wixAxiosConfig } from '@wix/wix-axios-config';
 import {
   COMPONENT_ID,
   BI_VIEW_ID,

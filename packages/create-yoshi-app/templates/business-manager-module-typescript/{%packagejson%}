@@ -1,5 +1,5 @@
 {
-  "name": "{%projectName%}",
+  "name": "@wix/{%projectName%}",
   "version": "1.0.0",
   "license": "UNLICENSED",
   "private": true,
@@ -44,17 +44,19 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "fedops-logger": "^3.0.5",
     "i18next": "~8.4.0",
     "i18next-xhr-backend": "~1.4.0",
     "react-i18next": "~4.8.0",
-    "wix-axios-config": "latest"
+    "@wix/fedops-logger": "^3.0.5",
+    "@wix/wix-axios-config": "latest"
   },
   "lint-staged": {
     "linters": {
       "*.{js,ts,tsx,scss,less}": "yoshi lint"
     },
-    "ignore": ["**/*.d.ts"]
+    "ignore": [
+      "**/*.d.ts"
+    ]
   },
   "yoshi": {
     "entry": {
