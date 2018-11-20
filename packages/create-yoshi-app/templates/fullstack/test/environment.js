@@ -1,7 +1,7 @@
 // https://github.com/wix-platform/wix-node-platform/tree/master/bootstrap/wix-bootstrap-testkit
-const testkit = require('wix-bootstrap-testkit');
+const testkit = require('@wix/wix-bootstrap-testkit');
 // https://github.com/wix-platform/wix-node-platform/tree/master/config/wix-config-emitter
-const configEmitter = require('wix-config-emitter');
+const configEmitter = require('@wix/wix-config-emitter');
 
 // take erb configurations from source folder, replace values/functions,
 // remove the ".erb" extension and emit files inside the target folder
