@@ -1,4 +1,4 @@
-const bootstrap = require('wix-bootstrap-ng');
+const bootstrap = require('@wix/wix-bootstrap-ng');
 const { wixCssModulesRequireHook } = require('yoshi-runtime');
 
 const rootDir = './dist/src';

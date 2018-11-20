@@ -3,7 +3,7 @@ import axios from 'axios';
 import adapter from 'axios/lib/adapters/http';
 import { beforeAndAfter, app } from '../environment';
 import { baseURL } from '../test-common';
-import { wixAxiosInstanceConfig } from 'wix-axios-config';
+import { wixAxiosInstanceConfig } from '@wix/wix-axios-config';
 
 const axiosInstance = wixAxiosInstanceConfig(axios, { baseURL, adapter });
 

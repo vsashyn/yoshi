@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime';
 import React from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-import { wixAxiosConfig } from 'wix-axios-config';
+import { wixAxiosConfig } from '@wix/wix-axios-config';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n/client-i18n';
 import App from './components/App';

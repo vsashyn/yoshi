@@ -1,15 +1,15 @@
 import 'regenerator-runtime/runtime';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import wixRunMode from 'wix-run-mode';
+import wixRunMode from '@wix/wix-run-mode';
 import ejs from 'ejs';
 import serialize from 'serialize-javascript';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n/server-i18n';
 import i18nMiddleware from './i18n/middleware-i18n';
 import App from './components/App';
-import wixExpressCsrf from 'wix-express-csrf';
-import wixExpressRequireHttps from 'wix-express-require-https';
+import wixExpressCsrf from '@wix/wix-express-csrf';
+import wixExpressRequireHttps from '@wix/wix-express-require-https';
 import { readFileSync } from 'fs';
 
 module.exports = (app, context) => {
