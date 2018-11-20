@@ -10,7 +10,7 @@ module.exports = async () => {
     await global.BROWSER.close();
 
     if (global.SERVER) {
-      global.SERVER.kill();
+      process.kill(-global.SERVER.pid);
     }
 
     await cdnProxy.stop();
