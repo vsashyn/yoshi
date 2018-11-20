@@ -57,39 +57,9 @@ function serverLogPrefixer() {
 
 const https = cliArgs.https || project.servers.cdn.ssl;
 
-function watchPublicFolder() {
-  const watcher = chokidar.watch(PUBLIC_DIR, {
-    persistent: true,
-    ignoreInitial: false,
-    cwd: PUBLIC_DIR,
-  });
-
-  const copyFile = relativePath => {
-    return fs.copy(
-      path.join(PUBLIC_DIR, relativePath),
-      path.join(ASSETS_DIR, relativePath),
-    );
-  };
-
-  const removeFile = relativePath => {
-    return fs.remove(path.join(ASSETS_DIR, relativePath));
-  };
-
-  watcher.on('change', copyFile);
-  watcher.on('add', copyFile);
-  watcher.on('unlink', removeFile);
-}
-
 module.exports = async () => {
   // Clean tmp folders
   await Promise.all([fs.emptyDir(BUILD_DIR), fs.emptyDir(TARGET_DIR)]);
-
-  // Copy public to statics dir
-  if (await fs.exists(PUBLIC_DIR)) {
-    // all files in `PUBLIC_DIR` are copied initially as Chokidar's `ignoreInitial`
-    // option is set to false
-    watchPublicFolder();
-  }
 
   await updateNodeVersion();
 
