@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Router } from 'express';
-import * as wixRunMode from 'wix-run-mode';
+import * as wixRunMode from '@wix/wix-run-mode';
 import * as ejs from 'ejs';
 import * as serialize from 'serialize-javascript';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n/server-i18n';
 import i18nMiddleware from './i18n/middleware-i18n';
 import App from './components/App';
-import * as wixExpressCsrf from 'wix-express-csrf';
-import * as wixExpressRequireHttps from 'wix-express-require-https';
+import * as wixExpressCsrf from '@wix/wix-express-csrf';
+import * as wixExpressRequireHttps from '@wix/wix-express-require-https';
 import { readFileSync } from 'fs';
 
 module.exports = (app: Router, context) => {

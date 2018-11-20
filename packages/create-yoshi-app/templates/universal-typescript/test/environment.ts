@@ -1,7 +1,7 @@
 // https://github.com/wix-platform/wix-node-platform/tree/master/bootstrap/wix-bootstrap-testkit
-import * as testkit from 'wix-bootstrap-testkit';
+import * as testkit from '@wix/wix-bootstrap-testkit';
 // https://github.com/wix-platform/wix-node-platform/tree/master/config/wix-config-emitter
-import * as configEmitter from 'wix-config-emitter';
+import * as configEmitter from '@wix/wix-config-emitter';
 
 export const app = bootstrapServer();
 

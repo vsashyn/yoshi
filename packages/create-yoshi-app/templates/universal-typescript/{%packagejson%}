@@ -1,5 +1,5 @@
 {
-  "name": "{%projectName%}",
+  "name": "@wix/{%projectName%}",
   "version": "1.0.0",
   "license": "UNLICENSED",
   "private": true,
@@ -24,9 +24,6 @@
     "lint-staged": "^7.2.2",
     "puppeteer": "^1.1.0",
     "react-test-renderer": "~15.6.0",
-    "wix-bootstrap-testkit": "latest",
-    "wix-config-emitter": "latest",
-    "wix-req-options": "latest",
     "yoshi": "^3.0.0",
     "yoshi-style-dependencies": "^3.0.0",
     "typescript": "~3.0.1",
@@ -39,7 +36,10 @@
     "@types/prop-types": "~15.5.0",
     "@types/react": "~15.6.0",
     "@types/react-dom": "~15.5.0",
-    "@types/react-i18next": "~4.6.0"
+    "@types/react-i18next": "~4.6.0",
+    "@wix/wix-bootstrap-testkit": "latest",
+    "@wix/wix-config-emitter": "latest",
+    "@wix/wix-req-options": "latest"
   },
   "dependencies": {
     "axios": "~0.16.0",
@@ -52,18 +52,20 @@
     "react-dom": "15.6.1",
     "react-i18next": "~4.8.0",
     "serialize-javascript": "~1.4.0",
-    "wix-axios-config": "latest",
-    "wix-bootstrap-ng": "latest",
-    "wix-express-csrf": "latest",
-    "wix-express-require-https": "latest",
-    "wix-run-mode": "latest",
-    "yoshi-runtime": "latest"
+    "yoshi-runtime": "latest",
+    "@wix/wix-axios-config": "latest",
+    "@wix/wix-bootstrap-ng": "latest",
+    "@wix/wix-express-csrf": "latest",
+    "@wix/wix-express-require-https": "latest",
+    "@wix/wix-run-mode": "latest"
   },
   "lint-staged": {
     "linters": {
       "*.{js,ts,tsx,scss,less}": "yoshi lint"
     },
-    "ignore": ["**/*.d.ts"]
+    "ignore": [
+      "**/*.d.ts"
+    ]
   },
   "yoshi": {
     "universalProject": true,

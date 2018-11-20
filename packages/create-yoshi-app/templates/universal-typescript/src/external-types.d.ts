@@ -1,4 +1,4 @@
-declare module 'wix-run-mode';
+declare module '@wix/wix-run-mode';
 declare module 'serialize-javascript';
 declare module '*.scss';
 declare module '*.json';
