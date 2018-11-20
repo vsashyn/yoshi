@@ -43,16 +43,18 @@
     "react": "15.6.1",
     "react-dom": "15.6.1",
     "react-test-renderer": "~15.6.0",
-    "teamcity-surge-autorelease": "^1.0.3",
     "typescript": "~3.0.1",
     "yoshi": "^3.0.0",
-    "yoshi-style-dependencies": "^3.0.0"
+    "yoshi-style-dependencies": "^3.0.0",
+    "@wix/teamcity-surge-autorelease": "^1.0.3"
   },
   "lint-staged": {
     "linters": {
       "*.{js,ts,tsx,scss,less}": "yoshi lint"
     },
-    "ignore": ["**/*.d.ts"]
+    "ignore": [
+      "**/*.d.ts"
+    ]
   },
   "yoshi": {
     "entry": {
