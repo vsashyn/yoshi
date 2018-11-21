@@ -2,6 +2,9 @@ const fs = require('fs-extra');
 const { WS_ENDPOINT_PATH } = require('./constants');
 const { shouldRunE2Es } = require('./utils');
 const cdnProxy = require('./cdnProxy');
+const {
+  killSpawnProcessAndHisChildren,
+} = require('../../test-helpers/process');
 
 module.exports = async () => {
   if (await shouldRunE2Es()) {
@@ -10,7 +13,7 @@ module.exports = async () => {
     await global.BROWSER.close();
 
     if (global.SERVER) {
-      process.kill(-global.SERVER.pid);
+      killSpawnProcessAndHisChildren(global.SERVER);
     }
 
     await cdnProxy.stop();
