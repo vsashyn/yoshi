@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "babel-register": "^6.26.0",
-    "chalk": "~2.3.1",
+    "chalk": "^2.4.1",
     "chokidar": "^2.0.4",
     "cosmiconfig": "^4.0.0",
     "detect-port": "^1.2.3",
