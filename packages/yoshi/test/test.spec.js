@@ -488,7 +488,7 @@ describe('Aggregator: Test', () => {
       test.teardown();
     });
 
-    describe.only('puppeteer environment', () => {
+    describe('puppeteer environment', () => {
       it('should pass with passing e2e tests', () => {
         const cdnPort = 3200;
         const serverPort = 3100;
