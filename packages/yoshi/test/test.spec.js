@@ -536,6 +536,7 @@ describe('Aggregator: Test', () => {
             `,
           })
           .execute('test', ['--jest']);
+
         expect(res.code).to.equal(0);
       });
 
